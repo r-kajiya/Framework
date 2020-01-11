@@ -2,7 +2,7 @@
 
 namespace Framework
 {
-	public class SoundManager : Singleton<SoundManager>
+	public class SoundManager : MonoSingleton<SoundManager>
 	{
         SoundPlayer[] _playerBGM;
         SoundPlayer[] _playerSE;
