@@ -53,7 +53,7 @@ namespace Framework
             return new Unsubscriber(observer);
         }
 
-        private class Unsubscriber : IDisposable
+        class Unsubscriber : IDisposable
         {
             IObserver<T> _observer;
 

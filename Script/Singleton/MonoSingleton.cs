@@ -4,7 +4,7 @@ namespace Framework
 {
     public abstract class MonoSingleton<T> : MonoBehaviour where T : MonoBehaviour
     {
-        private static T _instance;
+        static T _instance;
 
         public static T I
         {
