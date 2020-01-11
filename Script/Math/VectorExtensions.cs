@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Dot
+namespace Framework
 {
     public static class Vector3Extensions
     {

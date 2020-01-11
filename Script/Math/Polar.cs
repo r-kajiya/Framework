@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System;
 
-namespace Dot
+namespace Framework
 {
     /// <summary>
     /// 球面座標系に沿った動きを扱いやすくしたもの
