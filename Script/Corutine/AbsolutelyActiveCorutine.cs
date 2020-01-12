@@ -1,5 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System;
+using System.Collections;
 using UnityEngine;
 
 namespace Framework
@@ -8,7 +8,7 @@ namespace Framework
     {
         static AbsolutelyActiveCorutine instance;
 
-        public static Coroutine Subscribe(IEnumerator routine)
+        static void CreateIfNeeded()
         {
             if (instance == null)
             {
@@ -17,13 +17,32 @@ namespace Framework
                 instance = obj.AddComponent<AbsolutelyActiveCorutine>();
                 DontDestroyOnLoad(obj);
             }
+        }
+        
+
+        public static Coroutine Subscribe(IEnumerator routine)
+        {
+            CreateIfNeeded();
 
             return instance.StartCoroutine(instance.routine(routine));
+        }
+
+        public static Coroutine WaitSecondInvoke(Action onAction,float second)
+        {
+            CreateIfNeeded();
+            
+            return instance.StartCoroutine(instance.routineWaitSecond(onAction, second));
         }
 
         IEnumerator routine(IEnumerator src)
         {
             yield return StartCoroutine(src);
+        }
+        
+        IEnumerator routineWaitSecond(Action onAction, float second)
+        {
+            yield return new WaitForSeconds(second);
+            onAction.Invoke();
         }
     }
 }

@@ -82,6 +82,11 @@ namespace Framework
 
         void IfNeededClearLog()
         {
+            if (_logGrid == null)
+            {
+                return;
+            }
+            
             if (_logGrid.childCount > MAX_LOG)
             {
                 ClearLog();
