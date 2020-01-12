@@ -9,6 +9,11 @@ namespace Framework
         [SerializeField]
         RootPresenter _rootPresenter = null;
 
+        protected RootPresenter RootPresenter
+        {
+            get { return _rootPresenter; }
+        }
+
         static Dictionary<string, SystemContext> _systemContexts = new Dictionary<string, SystemContext>();
 
         static protected Dictionary<string, SystemContext> SystemContexts
