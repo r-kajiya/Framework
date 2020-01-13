@@ -18,13 +18,19 @@ namespace Framework
                 DontDestroyOnLoad(obj);
             }
         }
-        
 
         public static Coroutine Subscribe(IEnumerator routine)
         {
             CreateIfNeeded();
 
             return instance.StartCoroutine(instance.routine(routine));
+        }
+        
+        public static void Stop(Coroutine coroutine)
+        {
+            CreateIfNeeded();
+            
+            instance.StopCoroutine(coroutine);
         }
 
         public static Coroutine WaitSecondInvoke(Action onAction,float second)
