@@ -9,24 +9,9 @@ namespace Framework
 {
     public static class MFBFAuth
     {
-        public static void Login(string userId, Action<string> onSignIn)
-        {
-            DebugLog.Normal("FireBase Auth : ログイン認証を行います");
-            
-            if (string.IsNullOrEmpty(userId))
-            {
-                SignInAnonymously(user =>
-                {
-                    onSignIn?.Invoke(user.UserId);
-                });
-            }
-            else
-            {
-                onSignIn?.Invoke(userId);
-            }
-        }
-
-        static void SignInAnonymously(Action<FirebaseUser> onResult)
+        public static bool DidAnonymouslyLoggedIn { get; private set; } = false;
+        
+        public static void SignInAnonymously(Action<string> onResult)
         {
             DebugLog.Normal($"FireBase Auth : 匿名ログインを行います");
 
@@ -44,10 +29,11 @@ namespace Framework
                     return;
                 }
                 
-                FirebaseUser newUser = task.Result;
-                DebugLog.Normal($"FireBase Auth : 匿名ユーザーを作成しました {newUser.DisplayName} ({newUser.UserId})");
+                FirebaseUser anonymousUser = task.Result;
+                DebugLog.Normal($"FireBase Auth : 匿名ユーザーを作成しました {anonymousUser.DisplayName} ({anonymousUser.UserId})");
+                DidAnonymouslyLoggedIn = true;
                 
-                onResult?.Invoke(newUser);
+                onResult?.Invoke(anonymousUser.UserId);
             });
         }
     }    

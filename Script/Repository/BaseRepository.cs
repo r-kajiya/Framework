@@ -2,68 +2,73 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Object = System.Object;
 
 namespace Framework
 {
-    public abstract class BaseRepository<TModel, TEntity, TDataStore> : IRepository<TModel>
-        where TModel : IModel
-        where TEntity : IEntity
+    public abstract class BaseRepository<TModel, TDataStore> : IRepository<TModel>
+        where TModel : ModelBase
         where TDataStore : IDataStore<TModel>
     {
-        Dictionary<int, TModel> _map;
-        List<TModel> _list;
-        IDataStore<TModel> _dataStore;
-        bool _isDirty;
+        protected Dictionary<int, TModel> map;
+        protected List<TModel> list;
+        protected TDataStore dataStore;
+        protected bool isDirty;
 
-        public BaseRepository(IDataStore<TModel> dataStore)
+        protected BaseRepository(TDataStore dataStore)
         {
-            _dataStore = dataStore;
+            this.dataStore = dataStore;
             Load();
         }
 
-        public void Load()
+        public virtual void Load()
         {
-            _map = _dataStore.Load();
-            _list = new List<TModel>(_map.Values);
+            map = dataStore.Load();
+            list = new List<TModel>(map.Values);
         }
 
-        public void Save(TModel model)
+        public virtual void Save(TModel model)
         {
-            _isDirty = true;
-            _dataStore.Save(model);
+            isDirty = true;
+            dataStore.Save(model);
         }
 
-        public void SaveList(List<TModel> models)
+        public virtual void SaveList(List<TModel> models)
         {
-            _isDirty = true;
-            _dataStore.SaveList(models);
+            isDirty = true;
+            dataStore.SaveList(models);
         }
 
         public virtual TModel Get(int id)
         {
-            if (_isDirty)
+            if (isDirty)
             {
-                _isDirty = false;
+                isDirty = false;
                 Load();
             }
 
-            return _map[id];
+            if (Contains(id))
+            {
+                return map[id];
+            }
+
+            return null;
         }
 
-        public List<TModel> GetAll()
+        public virtual List<TModel> GetAll()
         {
-            if (_isDirty)
+            if (isDirty)
             {
-                _isDirty = false;
+                isDirty = false;
                 Load();
             }
 
-            return _list;
+            return list;
         }
 
         protected bool Contains(int id)
         {
-            return _map.ContainsKey(id);
+            return map.ContainsKey(id);
         }
     }
 }

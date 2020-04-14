@@ -73,6 +73,11 @@ namespace Framework
 
         void InternalLog(string log, Color color)
         {
+            if (_logGrid == null)
+            {
+                return;
+            }
+            
             var logGridCell = GameObject.Instantiate(_logGridCellPrefab, _logGrid);
             var text = logGridCell.GetComponentInChildren<Text>();
             var image = logGridCell.GetComponent<Image>();

@@ -11,12 +11,12 @@ namespace Framework
 
         string _userid;
 
-        const string Key = "users";
-        const string SortKey = "rank";
+        const string KEY = "users";
+        const string SORT_KEY = "rank";
 
         public void OnLoginAnonymously()
         {
-            MFBFNetwork.Login("", userId =>
+            MFBFNetwork.SignInAnonymously(userId =>
             {
                 _info.text = $"{userId}がログインしました";
                 _userid = userId;
@@ -49,37 +49,37 @@ namespace Framework
         
         public void OnGetById()
         {
-            MFBFNetwork.GetById(Key, _userid, s => { }, () => { });
+            MFBFNetwork.GetById(KEY, _userid, s => { }, () => { });
         }
         
         public void OnGetAll()
         {
-            MFBFNetwork.GetAll(Key, s => { }, () => { });
+            MFBFNetwork.GetAll(KEY, s => { }, () => { });
         }
         
         public void OnGetOrderByFirst()
         {
-            MFBFNetwork.GetOrderByFirst(Key, SortKey,2, null, null);
+            MFBFNetwork.GetOrderByFirst(KEY, SORT_KEY,2, null, null);
         }
         
         public void OnGetOrderByLast()
         {
-            MFBFNetwork.GetOrderByLast(Key, SortKey,2, null, null);
+            MFBFNetwork.GetOrderByLast(KEY, SORT_KEY,2, null, null);
         }
 
         public void OnSetById()
         {
             User kajiya = new User("k-r", "gmail", 1);
             string json = JsonUtility.ToJson(kajiya);
-            MFBFNetwork.SetById(Key, _userid, json, null, null);
+            MFBFNetwork.SetById(KEY, _userid, json, null, null);
             
             User hayato = new User("hayato", "ymail", 2);
             json = JsonUtility.ToJson(hayato);
-            MFBFNetwork.SetById(Key, "dadusadhasuod", json, null, null);
+            MFBFNetwork.SetById(KEY, "dadusadhasuod", json, null, null);
             
             User shouhei = new User("shouhei", "smail", 3);
             json = JsonUtility.ToJson(shouhei);
-            MFBFNetwork.SetById(Key, "dashoduasdao", json, null, null);
+            MFBFNetwork.SetById(KEY, "dashoduasdao", json, null, null);
         }
         
     }

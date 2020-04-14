@@ -9,9 +9,10 @@ namespace Framework
 {
     public static class MFBFNetwork
     {
-        const string DataBaseURL = "https://super-suport-race.firebaseio.com/";
+        const string DATA_BASE_URL = "https://super-suport-race.firebaseio.com/";
+        public static bool DidAnonymouslyLoggedIn => MFBFAuth.DidAnonymouslyLoggedIn;
 
-        public static void Login(string userId, Action<string> onSignIn)
+        public static void SignInAnonymously(Action<string> onSignIn)
         {
             FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(task => {
                 
@@ -20,14 +21,14 @@ namespace Framework
                 if (dependencyStatus == DependencyStatus.Available)
                 {
                     DebugLog.Normal("Firebase : ユーザー設定を行います");
-                    MFBFAuth.Login(userId, onSignIn);
+                    MFBFAuth.SignInAnonymously(onSignIn);
                 } 
                 else
                 {
                     DebugLog.Error("Firebase : 依存関係を解決できませんでした: " + dependencyStatus);
                 }
                 
-                FirebaseRealtimeDatabase.SetupDatabase(DataBaseURL);
+                MFBFDatabase.SetupDatabase(DATA_BASE_URL);
             });
         }
 
@@ -39,27 +40,27 @@ namespace Framework
 
         public static void GetById(string key, string id, Action<string> onSuccess, Action onFailed)
         {
-            FirebaseRealtimeDatabase.GetByID(key, id, onSuccess, onFailed);
+            MFBFDatabase.GetByID(key, id, onSuccess, onFailed);
         }
         
         public static void GetAll(string key, Action<string> onSuccess, Action onFailed)
         {
-            FirebaseRealtimeDatabase.GetAll(key, onSuccess, onFailed);
+            MFBFDatabase.GetAll(key, onSuccess, onFailed);
         }
         
         public static void GetOrderByFirst(string key, string sortKey, int fetchCount, Action<string> onSuccess, Action onFailed)
         {
-            FirebaseRealtimeDatabase.GetOrderByFirst(key, sortKey, fetchCount, onSuccess, onFailed);
+            MFBFDatabase.GetOrderByFirst(key, sortKey, fetchCount, onSuccess, onFailed);
         }
         
         public static void GetOrderByLast(string key, string sortKey, int fetchCount, Action<string> onSuccess, Action onFailed)
         {
-            FirebaseRealtimeDatabase.GetOrderByLast(key, sortKey, fetchCount, onSuccess, onFailed);
+            MFBFDatabase.GetOrderByLast(key, sortKey, fetchCount, onSuccess, onFailed);
         }
         
         public static void SetById(string key, string id, string json, Action onSuccess, Action onFailed)
         {
-            FirebaseRealtimeDatabase.SetByID(key, id, json, onSuccess, onFailed);
+            MFBFDatabase.SetByID(key, id, json, onSuccess, onFailed);
         }
     }    
 }
