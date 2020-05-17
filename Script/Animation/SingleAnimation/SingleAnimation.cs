@@ -5,7 +5,7 @@ using UnityEngine.Playables;
 
 namespace Framework
 {
-    [RequireComponent(typeof(Animator))]
+    // [RequireComponent(typeof(Animator))]
     public class SingleAnimation : MonoBehaviour
     {
         [SerializeField]
@@ -19,7 +19,7 @@ namespace Framework
         Animator _animator;
         bool _isInitialized;
         DirectorUpdateMode _updateMode;
-        Action _onStop;
+        Action _onPause;
         Action _onFinish;
         
         public Animator Animator
@@ -38,14 +38,13 @@ namespace Framework
         public void Initialize(DirectorUpdateMode updateMode = DirectorUpdateMode.GameTime)
         {
             _isInitialized = false;
-
+            _updateMode = updateMode;
+            
             if (_playableGraph.IsValid())
             {
                 _playableGraph.Destroy();
             }
-            
-            _updateMode = updateMode;
-            
+
             _playableGraph = PlayableGraph.Create();
             _playableGraph.SetTimeUpdateMode(_updateMode);
 
@@ -56,10 +55,6 @@ namespace Framework
             var playableOutput = AnimationPlayableOutput.Create(_playableGraph, "SingleAnimation", Animator);
             playableOutput.SetSourcePlayable(_animationClipPlayable);
 
-            
-            _onFinish = () => { Debug.LogWarning("Finish");};
-            _onStop = () => { Debug.LogWarning("Stop");};
-            
             _isInitialized = true;
         }
 
@@ -85,7 +80,7 @@ namespace Framework
         {
             if (_playAutomatically)
             {
-                Stop();
+                Pause();
                 _playableGraph.Stop();
             }
         }
@@ -148,11 +143,11 @@ namespace Framework
             _animationClipPlayable.Play();
         }
 
-        public void Stop()
+        public void Pause()
         {
             _animationClipPlayable.Pause();
-            _onStop?.Invoke();
-            _onStop = null;
+            _onPause?.Invoke();
+            _onPause = null;
         }
 
         public void SetSpeed(float speed)
@@ -170,9 +165,9 @@ namespace Framework
             return _animationClip.isLooping;
         }
 
-        public void SetStopCallback(Action onAction)
+        public void SetPauseCallback(Action onAction)
         {
-            _onStop = onAction;
+            _onPause = onAction;
         }
         
         public void SetFinishCallback(Action onAction)
@@ -221,24 +216,5 @@ namespace Framework
                                  $", FootIK:{_animationClipPlayable.GetApplyFootIK()}" +
                                  $", PlayableIK:{_animationClipPlayable.GetApplyPlayableIK()}";
         }
-
-#if UNITY_EDITOR
-
-        public void Speed2x()
-        {
-            SetSpeed(2);
-        }
-
-        public void Speed1x()
-        {
-            SetSpeed(1);
-        }
-
-        public void Speed05x()
-        {
-            SetSpeed(0.5f);
-        }
-
-#endif
     }
 }
