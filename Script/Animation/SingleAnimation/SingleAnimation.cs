@@ -5,7 +5,7 @@ using UnityEngine.Playables;
 
 namespace Framework
 {
-    // [RequireComponent(typeof(Animator))]
+    [RequireComponent(typeof(Animator))]
     public class SingleAnimation : MonoBehaviour
     {
         [SerializeField]
