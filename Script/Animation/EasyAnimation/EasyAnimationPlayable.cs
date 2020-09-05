@@ -49,7 +49,6 @@ namespace Framework
             int inputCount = newState.index + 1;
             _mixer.SetInputCount(inputCount);
             _graph.Connect(newState.Playable, 0, _mixer, newState.index);
-            Play(newState.index, 0f);
 
             return true;
         }
@@ -156,6 +155,17 @@ namespace Framework
         public bool IsPlaying(string stateName)
         {
             var state = _stateManager.Find(stateName);
+            if (state == null)
+            {
+                return false;
+            }
+            
+            return state.IsPlaying();
+        }
+        
+        public bool IsPlaying(int stateIndex)
+        {
+            var state = _stateManager.Find(stateIndex);
             if (state == null)
             {
                 return false;

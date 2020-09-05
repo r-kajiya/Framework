@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<engine:UXML
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:engine="UnityEngine.UIElements"
+    xmlns:editor="UnityEditor.UIElements"
+    xsi:noNamespaceSchemaLocation="../../../../../../../UIElementsSchema/UIElements.xsd"
+>
+    
+<engine:Box class="base_box_class">
+    
+    <engine:Box class="left_box_class">
+        <engine:Box class="left_box_header_class">
+            <engine:Button name="scene_button" class="scene_button_class" />
+            <engine:Button name="play_button" class="play_button_class" />
+            <engine:Button name="stop_button" class="stop_button_class" />
+            <engine:TextField name="frame_text_field" value="0" class="frame_text_field_class" />
+        </engine:Box>
+        <engine:Box class="left_box_second_class">
+            <editor:ObjectField name="animation_clip_field" class="animation_clip_field_class" />
+            <editor:EnumField name="frame_rate_type" class="frame_rate_type_class" />
+        </engine:Box>
+    </engine:Box>
+
+    <engine:Box class="right_box_class">
+        <engine:Box class="right_box_header_class">
+            <engine:SliderInt
+                    name="frame_slider"
+                    low-value="1"
+                    high-value="100"
+                    class="frame_slider_class"/>
+        </engine:Box>
+        <engine:Box name="right_box_second" class="right_box_second_class">
+        </engine:Box>
+    </engine:Box>
+    
+</engine:Box>
+    
+</engine:UXML>
+

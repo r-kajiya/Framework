@@ -113,6 +113,11 @@ namespace Framework
             return _playable.IsPlaying(stateName);
         }
         
+        public bool IsPlaying(int stateIndex)
+        {
+            return _playable.IsPlaying(stateIndex);
+        }
+        
         public bool IsAnythingPlaying()
         {
             return _playable.IsAnythingPlaying();

@@ -1,3 +1,4 @@
+#if USE_FIREBASE
 #if UNITY_EDITOR
 using UnityEngine;
 using UnityEngine.UI;
@@ -85,4 +86,5 @@ namespace Framework
     }
 }
 
+#endif
 #endif
