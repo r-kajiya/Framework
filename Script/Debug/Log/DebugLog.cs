@@ -9,9 +9,11 @@ namespace Framework
         [Conditional("DEBUG"), RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         static void InitializeLog()
         {
+#if USE_DEBUG_LOG
             var prefab = Resources.Load<DebugCanvas>("Debug/DebugCanvas");
             _canvas = GameObject.Instantiate<DebugCanvas>(prefab);
             Application.logMessageReceived += UnityLogHanlder;
+#endif
         }
 
         static void UnityLogHanlder(string log, string stackTrace, LogType type)
@@ -63,4 +65,3 @@ namespace Framework
         }
     }
 }
-
