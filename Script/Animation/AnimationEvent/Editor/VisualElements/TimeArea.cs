@@ -412,9 +412,6 @@ namespace Framework
             {
                 string str = FormatTime(time, frameRate, TimeFormat.TimeFrame);
 
-                string allowedCharacters = "0123456789.,:";
-
-                bool changed;
                 // str = EditorGUI.DoTextField(EditorGUI.s_RecycledEditor, id, rect, str, EditorStyles.numberField,
                 //     allowedCharacters, out changed, false, false, false);
 

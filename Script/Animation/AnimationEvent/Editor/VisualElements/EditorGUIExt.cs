@@ -786,7 +786,6 @@ namespace Framework
         }
         
         static readonly int s_SliderHash = "Slider".GetHashCode();
-        static int s_ScrollControlId;
 
         public static float Scroller(
             Rect position,
@@ -829,8 +828,8 @@ namespace Framework
             if (ScrollerRepeatButton(controlId, rect2, rightButton))
                 value += (float) (10.0 * ((double) leftValue < (double) rightValue ? 1.0 : -1.0));
             if (flag && Event.current.type == EventType.Used)
-                s_ScrollControlId = 0;
-            value = (double) leftValue >= (double) rightValue
+                
+                value = (double) leftValue >= (double) rightValue
                 ? Mathf.Clamp(value, rightValue, leftValue - size)
                 : Mathf.Clamp(value, leftValue, rightValue - size);
             return value;

@@ -5,7 +5,7 @@ namespace Framework
 {
     public static class DebugLog
     {
-        static DebugCanvas _canvas;
+        static DebugCanvas _canvas = null;
         [Conditional("DEBUG"), RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         static void InitializeLog()
         {

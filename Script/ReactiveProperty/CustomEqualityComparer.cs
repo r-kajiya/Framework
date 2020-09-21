@@ -6,13 +6,13 @@ namespace Framework
 {
     public static class CustomEqualityComparer
     {
-        public static readonly IEqualityComparer<Vector2> Vector2 = new Vector2EqualityComparer();
-        public static readonly IEqualityComparer<Vector3> Vector3 = new Vector3EqualityComparer();
-        public static readonly IEqualityComparer<Vector4> Vector4 = new Vector4EqualityComparer();
-        public static readonly IEqualityComparer<Color> Color = new ColorEqualityComparer();
-        public static readonly IEqualityComparer<Rect> Rect = new RectEqualityComparer();
-        public static readonly IEqualityComparer<Bounds> Bounds = new BoundsEqualityComparer();
-        public static readonly IEqualityComparer<Quaternion> Quaternion = new QuaternionEqualityComparer();
+        static readonly IEqualityComparer<Vector2> Vector2 = new Vector2EqualityComparer();
+        static readonly IEqualityComparer<Vector3> Vector3 = new Vector3EqualityComparer();
+        static readonly IEqualityComparer<Vector4> Vector4 = new Vector4EqualityComparer();
+        static readonly IEqualityComparer<Color> Color = new ColorEqualityComparer();
+        static readonly IEqualityComparer<Rect> Rect = new RectEqualityComparer();
+        static readonly IEqualityComparer<Bounds> Bounds = new BoundsEqualityComparer();
+        static readonly IEqualityComparer<Quaternion> Quaternion = new QuaternionEqualityComparer();
 
         static readonly RuntimeTypeHandle vector2Type = typeof(Vector2).TypeHandle;
         static readonly RuntimeTypeHandle vector3Type = typeof(Vector3).TypeHandle;

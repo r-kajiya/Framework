@@ -23,7 +23,7 @@ namespace Framework.Editor
             }
         }
 
-        const string ITEM_NAME = "Framework/DefineSymbol";
+        const string ITEM_NAME = "Framework/DefineSymbolの設定";
         const string WINDOW_TITLE = "Define Symbol";
         const string XML_PATH = "Assets/Framework/Script/Define/Editor/symbols.xml";
         static Vector2 _scrollPos;

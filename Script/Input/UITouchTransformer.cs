@@ -3,7 +3,7 @@ using UnityEngine.EventSystems;
 
 namespace Framework
 {
-    public class UITocuhTransformer : MonoBehaviour, IPointerDownHandler, IDragHandler
+    public class UITouchTransformer : MonoBehaviour, IPointerDownHandler, IDragHandler
     {
         RectTransform _rectTransform;
         float _baseScale;

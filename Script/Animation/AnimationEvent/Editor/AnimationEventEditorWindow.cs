@@ -83,12 +83,10 @@ namespace Framework
             
             rootVisualElement.Query<TextField>()
                 .ForEach(x => {
-                    Debug.Log(x.name);
                 });
             
             rootVisualElement.Query<SliderInt>()
                 .ForEach(x => {
-                    Debug.Log(x.name);
                 });
             
             var animationClipField = rootVisualElement.Q<ObjectField>("animation_clip_field");

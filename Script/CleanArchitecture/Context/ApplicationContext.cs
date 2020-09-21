@@ -11,10 +11,8 @@ namespace Framework
 
         void Awake()
         {
-            // ゲーム起動時のSystemContextをすべてオフに
             Run();
-
-            // 初回起動シーンをロードする
+            
             AbsolutelyActiveCorutine.Subscribe(_firstSystemContext.DoInitRun());
         }
     }

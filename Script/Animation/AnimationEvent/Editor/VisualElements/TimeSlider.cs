@@ -8,8 +8,6 @@ namespace Framework
 {
     public class TimeSlider : VisualElement
     {
-        static readonly string ussClassName = "time-slider";
-
         TimeArea _timeArea;
 
         public TimeSlider()
