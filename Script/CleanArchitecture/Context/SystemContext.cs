@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,34 +7,31 @@ namespace Framework
 {
     public class SystemContext : Context
     {
-        [SerializeField]
-        RootPresenter _rootPresenter = null;
+        static readonly Dictionary<string, SystemContext> systemContexts = new Dictionary<string, SystemContext>();
+        protected static Dictionary<string, SystemContext> SystemContexts => systemContexts;
 
-        protected RootPresenter RootPresenter
+        protected List<IUseCase> UseCases { get; } = new List<IUseCase>();
+
+        void Update()
         {
-            get { return _rootPresenter; }
-        }
-
-        static Dictionary<string, SystemContext> _systemContexts = new Dictionary<string, SystemContext>();
-
-        static protected Dictionary<string, SystemContext> SystemContexts
-        {
-            get { return _systemContexts; }
-        }
+            float dt = Time.deltaTime;
             
+            foreach (var useCase in UseCases)
+            {
+                useCase.OnUpdate(dt);
+            }
+        }
+
         public override void Run()
         {
-            if (!_systemContexts.ContainsKey(gameObject.name))
+            if (!systemContexts.ContainsKey(gameObject.name))
             {
-                _systemContexts.Add(gameObject.name, this);
+                systemContexts.Add(gameObject.name, this);
             }
-            
-            _rootPresenter.Disable();
         }
 
         public IEnumerator DoInitRun()
         {
-            _rootPresenter.Enable();
             yield return DoPreLoad(null);
             yield return DoLoad(null);
             yield return DoLoaded(null);
@@ -69,7 +67,7 @@ namespace Framework
             changer.Execute(this, next, container);
         }
 
-        protected class SystemContextChanger
+        class SystemContextChanger
         {
             public System.Func<IEnumerator> OnCurPreUnload;
             public System.Func<IEnumerator> OnCurUnload;
@@ -94,10 +92,7 @@ namespace Framework
 
                 yield return OnCurUnloaded?.Invoke();
                 yield return self.DoUnloaded();
-
-                self._rootPresenter.Disable();
-                next._rootPresenter.Enable();
-
+                
                 yield return OnNextPreLoad?.Invoke();
                 yield return next.DoPreLoad(container);
 

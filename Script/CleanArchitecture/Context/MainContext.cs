@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Framework
 {
-    public class ApplicationContext : Context
+    public class MainContext : Context
     {
         [SerializeField]
         SystemContext _firstSystemContext = null;

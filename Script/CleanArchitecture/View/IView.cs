@@ -1,8 +1,10 @@
-﻿namespace Framework
+﻿using UnityEngine;
+
+namespace Framework
 {
     public interface IView
     {
-    
+        
     }    
 }
 
