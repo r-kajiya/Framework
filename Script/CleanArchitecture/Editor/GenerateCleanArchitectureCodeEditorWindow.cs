@@ -1,6 +1,4 @@
 ﻿#if UNITY_EDITOR
-using System.Collections.Generic;
-using System.IO;
 using System.Text;
 using UnityEditor;
 using UnityEngine;
@@ -12,9 +10,8 @@ namespace Framework.Editor
         const string ITEM_NAME = "Framework/CleanArchitecture Generate Window";
         const string WINDOW_TITLE = "CleanArchitecture Generate Window";
         
-        TextAsset _textAsset;
         string _namespace;
-        string _path;
+        string _className;
 
         [MenuItem(ITEM_NAME)]
         static void Open()
@@ -24,13 +21,9 @@ namespace Framework.Editor
 
         void OnGUI()
         {
-            EditorGUILayout.BeginHorizontal();
-            _textAsset = (TextAsset) EditorGUILayout.ObjectField ("スキーマ定義json", _textAsset, typeof(TextAsset), false);
-            EditorGUILayout.EndHorizontal();
-            _path = AssetDatabase.GetAssetPath (_textAsset);
-
             _namespace = EditorGUILayout.TextField("namespace", _namespace);
-            
+            _className = EditorGUILayout.TextField("class name", _className);
+
             if (GUILayout.Button("コード生成"))
             {
                 if (Validate())
@@ -42,85 +35,111 @@ namespace Framework.Editor
 
         bool Validate()
         {
-            FileInfo info = new FileInfo(_path);
-            
-            if (!info.Extension.Contains("json"))
-            {
-                Debug.LogError("jsonファイルではありません");
-                return false;
-            }
-            
-            if (!info.Name.Contains("schema"))
-            {
-                Debug.LogError("定義ファイルではありません");
-                return false;
-            }
-
             if (string.IsNullOrEmpty(_namespace))
             {
-                Debug.LogError("namespaceを入力してください");
+                Debug.Log("namespaceが設定されてません");
                 return false;
             }
-
+            
+            if (string.IsNullOrEmpty(_className))
+            {
+                Debug.Log("クラス名が設定されてません");
+                return false;
+            }
+            
             return true;
         }
-        
+
         void Execute()
         {
             GenerateUseCase();
+            GenerateContainer();
+            GeneratePresenter();
+            GenerateView();
         }
 
         void GenerateUseCase()
         {
-            // StringBuilder stringBuilder = new StringBuilder();
-            // stringBuilder.AppendLine("using System;");
-            // stringBuilder.AppendLine("using UnityEngine;");
-            // stringBuilder.AppendLine("using Framework;");
-            // stringBuilder.AppendLine();
-            // stringBuilder.Append("namespace ").AppendLine(_namespace);
-            // stringBuilder.AppendLine("{");
-            // stringBuilder.AppendLine("    [Serializable]");
-            // stringBuilder.Append("    public class ").Append(_entityName).AppendLine(" : IEntity");
-            // stringBuilder.AppendLine("    {");
-            // foreach (var pair in _keyTypeMap)
-            // {
-            //     stringBuilder.AppendLine("        [SerializeField, HideInInspector]");
-            //
-            //     if (pair.Value.Contains("int"))
-            //     {
-            //         stringBuilder.Append("        int ").Append(pair.Key).AppendLine(" = -1;");
-            //         stringBuilder.Append("        public int ").Append(pair.Key.ToTitleUpperCase()).Append("=> ").Append(pair.Key).AppendLine(";");
-            //     }
-            //     else if (pair.Value.Contains("float"))
-            //     {
-            //         stringBuilder.Append("        float ").Append(pair.Key).AppendLine(" = -1.0f;");
-            //         stringBuilder.Append("        public float ").Append(pair.Key.ToTitleUpperCase()).Append("=> ").Append(pair.Key).AppendLine(";");
-            //     }
-            //     else if (pair.Value.Contains("string"))
-            //     {
-            //         stringBuilder.Append("        string ").Append(pair.Key).AppendLine(" = \"\";");
-            //         stringBuilder.Append("        public string ").Append(pair.Key.ToTitleUpperCase()).Append("=> ").Append(pair.Key).AppendLine(";");
-            //     }
-            //
-            //     stringBuilder.AppendLine();
-            // }
-            // stringBuilder.Append("        public ").Append(_entityName).Append("(").Append(_modelName).AppendLine(" model)");
-            // stringBuilder.AppendLine("        {");
-            // foreach (var pair in _keyTypeMap)
-            // {
-            //     stringBuilder.Append("            ").Append(pair.Key).Append(" = model.").Append(pair.Key.ToTitleUpperCase()).AppendLine(";");
-            // }
-            // stringBuilder.AppendLine("        }");
-            // stringBuilder.AppendLine("    }");
-            // stringBuilder.AppendLine("}");
-            //
-            // string fileName = _entityName + ".cs";
-            // FileInfo info = new FileInfo(_path);
-            // string path = info.DirectoryName + "/" + fileName;
-            //
-            // FileUtil.SaveText(stringBuilder.ToString(), path);
-            //
-            // Debug.Log(path+"に生成しました");
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.AppendLine("using Framework;");
+            stringBuilder.AppendLine();
+            stringBuilder.Append("namespace ").AppendLine(_namespace);
+            stringBuilder.AppendLine("{");
+            stringBuilder.Append("    public class ").Append(_className).Append("UseCase : UseCaseBase<").Append(_className).Append("Container, ").Append(_className).Append("Presenter, ").Append(_className).AppendLine("View>");
+            stringBuilder.AppendLine("    {");
+            stringBuilder.Append("        public ").Append(_className).Append("UseCase(").Append(_className).AppendLine("Container container):base(container)");
+            stringBuilder.AppendLine("        {");
+            stringBuilder.AppendLine();
+            stringBuilder.AppendLine("        }");
+            stringBuilder.AppendLine("    }");
+            stringBuilder.AppendLine("}");
+
+            string path = Application.dataPath + "/Framework/Script/CleanArchitecture/Editor/" + _className + "UseCase.cs";
+            FileUtil.SaveText(stringBuilder.ToString(), path);
+            Debug.Log(path+"に生成しました");
+        }
+
+        void GenerateContainer()
+        {
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.AppendLine("using Framework;");
+            stringBuilder.AppendLine();
+            stringBuilder.Append("namespace ").AppendLine(_namespace);
+            stringBuilder.AppendLine("{");
+            stringBuilder.Append("    public class ").Append(_className).Append("Container : IContainer<").Append(_className).Append("Presenter, ").Append(_className).AppendLine("View> ");
+            stringBuilder.AppendLine("    {");
+            stringBuilder.Append("        public ").Append(_className).AppendLine("Presenter Presenter { get; }");
+            stringBuilder.Append("        public ").Append(_className).Append("Container(").Append(_className).AppendLine("Presenter presenter)");
+            stringBuilder.AppendLine("        {");
+            stringBuilder.AppendLine("            Presenter = presenter;");
+            stringBuilder.AppendLine("        }");
+            stringBuilder.AppendLine("    }");
+            stringBuilder.AppendLine("}");
+
+            string path = Application.dataPath + "/Framework/Script/CleanArchitecture/Editor/" + _className + "Container.cs";
+            FileUtil.SaveText(stringBuilder.ToString(), path);
+            Debug.Log(path+"に生成しました");
+        }
+        
+        void GeneratePresenter()
+        {
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.AppendLine("using Framework;");
+            stringBuilder.AppendLine("using UnityEngine;");
+            stringBuilder.AppendLine();
+            stringBuilder.Append("namespace ").AppendLine(_namespace);
+            stringBuilder.AppendLine("{");
+            stringBuilder.Append("    public class ").Append(_className).Append("Presenter : MonoBehaviour, IPresenter<").Append(_className).AppendLine("View>");
+            stringBuilder.AppendLine("    {");
+            stringBuilder.AppendLine("        [SerializeField]");
+            stringBuilder.Append("        ").Append(_className).AppendLine("View _view = null;");
+            stringBuilder.Append("        public ").Append(_className).AppendLine("View  View => _view;");
+            stringBuilder.AppendLine("    }");
+            stringBuilder.AppendLine("}");
+
+            string path = Application.dataPath + "/Framework/Script/CleanArchitecture/Editor/" + _className + "Presenter.cs";
+            FileUtil.SaveText(stringBuilder.ToString(), path);
+            Debug.Log(path+"に生成しました");
+        }
+        
+        void GenerateView()
+        {
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.AppendLine("using Framework;");
+            stringBuilder.AppendLine("using UnityEngine;");
+            stringBuilder.AppendLine("using UnityEngine.UI;");
+            stringBuilder.AppendLine();
+            stringBuilder.Append("namespace ").AppendLine(_namespace);
+            stringBuilder.AppendLine("{");
+            stringBuilder.Append("    public class ").Append(_className).AppendLine("View : MonoBehaviour, IView");
+            stringBuilder.AppendLine("    {");
+            stringBuilder.AppendLine();
+            stringBuilder.AppendLine("    }");
+            stringBuilder.AppendLine("}");
+
+            string path = Application.dataPath + "/Framework/Script/CleanArchitecture/Editor/" + _className + "View.cs";
+            FileUtil.SaveText(stringBuilder.ToString(), path);
+            Debug.Log(path+"に生成しました");
         }
     }    
 }

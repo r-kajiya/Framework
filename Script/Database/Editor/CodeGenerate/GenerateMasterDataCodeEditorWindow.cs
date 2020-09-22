@@ -5,7 +5,7 @@ using System.Text;
 using UnityEditor;
 using UnityEngine;
 
-namespace Framework
+namespace Framework.Editor
 {
     public class GenerateMasterDataCodeEditorWindow : EditorWindow
     {
