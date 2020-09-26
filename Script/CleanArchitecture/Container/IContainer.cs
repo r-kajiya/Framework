@@ -6,4 +6,9 @@ namespace Framework
     {
         TPresenter Presenter { get; }
     }
+    
+    public interface IContainer
+    {
+        
+    }
 }

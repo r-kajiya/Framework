@@ -10,18 +10,8 @@ namespace Framework
         static readonly Dictionary<string, SystemContext> systemContexts = new Dictionary<string, SystemContext>();
         protected static Dictionary<string, SystemContext> SystemContexts => systemContexts;
 
-        protected List<IUseCase> UseCases { get; } = new List<IUseCase>();
-
-        void Update()
-        {
-            float dt = Time.deltaTime;
-            
-            foreach (var useCase in UseCases)
-            {
-                useCase.OnUpdate(dt);
-            }
-        }
-
+        protected Dictionary<int, IUseCase> UseCases { get; } = new Dictionary<int, IUseCase>();
+        
         public override void Run()
         {
             if (!systemContexts.ContainsKey(gameObject.name))
@@ -35,6 +25,21 @@ namespace Framework
             yield return DoPreLoad(null);
             yield return DoLoad(null);
             yield return DoLoaded(null);
+        }
+
+        protected virtual void OnUpdate(float dt)
+        {
+            foreach (var useCase in UseCases)
+            {
+                useCase.Value.OnUpdate(dt);
+            }
+        }
+        
+        void Update()
+        {
+            float dt = Time.deltaTime;
+
+            OnUpdate(dt);
         }
 
         protected virtual IEnumerator DoPreLoad(SystemContextContainer container) { yield break; }

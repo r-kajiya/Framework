@@ -5,7 +5,7 @@
         void OnUpdate(float dt);
     }
     
-    public class UseCaseBase<TContainer, TPresenter, TView> : IUseCase
+    public abstract class UseCaseBase<TContainer, TPresenter, TView> : IUseCase
         where TView : IView
         where TPresenter : IPresenter<TView>
         where TContainer : IContainer<TPresenter, TView>
@@ -18,6 +18,20 @@
             _container = container;
         }
 
+        public virtual void OnUpdate(float dt) { }
+    }
+
+    public abstract class UseCaseBase<TContainer> : IUseCase
+        where TContainer : IContainer
+    {
+        readonly TContainer _container;
+        protected TContainer Container => _container;
+
+        protected UseCaseBase(TContainer container)
+        {
+            _container = container;
+        }
+        
         public virtual void OnUpdate(float dt) { }
     }
 }
