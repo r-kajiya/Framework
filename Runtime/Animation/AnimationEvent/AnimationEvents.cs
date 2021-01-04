@@ -45,12 +45,6 @@ namespace Framework
         {
             _animationClipEventsList.RemoveAt(index);
         }
-        
-        [Button(ButtonSizes.Medium)]
-        void OnOpenAnimationEventEditScene()
-        {
-            var scene = UnityEditor.SceneManagement.EditorSceneManager.OpenScene("Assets/Framework/Editor/Animation/AnimationEvent/AnimationEventEditor.unity");
-        }
 #endif
     }
 }

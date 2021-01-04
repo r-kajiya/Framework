@@ -26,6 +26,16 @@ namespace Framework
 
         public AnimationEventType AnimationEventType => _animationEventType;
 
+        [OdinSerialize]
+        GameObject _effectPrefab;
+
+        public GameObject EffectPrefab => _effectPrefab;
+
+        [OdinSerialize]
+        string _effectParentName;
+        
+        public string EffectParentName => _effectParentName;
+
         public static AnimationEventObject Create(int frame)
         {
             var obj = ScriptableObject.CreateInstance<AnimationEventObject>();

@@ -27,6 +27,9 @@ MonoBehaviour:
     - Name: _animationEventType
       Entry: 3
       Data: 0
+    - Name: _effectPrefab
+      Entry: 6
+      Data: 
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -49,9 +52,6 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes:
-    - Name: _animationEventInvoker
-      Entry: 6
-      Data: 
     - Name: _animationClipEventsList
       Entry: 7
       Data: 0|System.Collections.Generic.List`1[[Framework.AnimationClipEvents, Assembly-Framework]],
@@ -94,6 +94,12 @@ MonoBehaviour:
     - Name: _animationClip
       Entry: 10
       Data: 0
+    - Name: _isOverrideAnimationClipName
+      Entry: 5
+      Data: false
+    - Name: _overrideAnimationClipName
+      Entry: 6
+      Data: 
     - Name: _animationEventObjectMap
       Entry: 7
       Data: 0|System.Collections.Generic.Dictionary`2[[System.Int32, mscorlib],[Framework.AnimationEventObject,
