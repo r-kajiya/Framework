@@ -1,0 +1,5 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<root>
+    <symbol name="USE_FIREBASE"   comment="Firebaseを使用している" />
+    <symbol name="USE_DEBUG_LOG"  comment="DebugLogを表示するか" />
+</root>

@@ -1,0 +1,15 @@
+{
+    "name": "Assembly-FrameworkEditor",
+    "references": [
+        "GUID:37069f2e1c6304ff48e74c84b8cf7dca"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
