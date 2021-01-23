@@ -11,7 +11,6 @@ namespace Framework
         AnimationMixerPlayable _mixer;
         PlayableGraph _graph;
         List<EasyAnimationState> _pauseStates;
-        
         readonly EasyAnimationStateManager _stateManager;
 
         public Playable Self => _self;
@@ -35,6 +34,7 @@ namespace Framework
         public override void PrepareFrame(Playable owner, FrameData data)
         {
             UpdateCrossFade(data.deltaTime);
+            UpdateBlend(data.deltaTime);
         }
 
         public bool Add(AnimationClip clip, string stateName)
@@ -57,6 +57,21 @@ namespace Framework
         {
             return _stateManager.Remove(stateName);
         }
+        
+        public bool AddBlend(EasyBlendTree blendTree)
+        {
+            if (!_stateManager.AddBlend(blendTree))
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public bool RemoveBlend(string stateName)
+        {
+            return _stateManager.RemoveBlend(stateName);
+        }
 
         public bool Play(int stateIndex, float time)
         {
@@ -78,7 +93,9 @@ namespace Framework
                 return false;
             }
 
-            foreach (var state in _stateManager.States)
+            BlendStopIfNeeded();
+
+            foreach (var state in _stateManager.states)
             {
                 if (state.StateName == stateName)
                 {
@@ -120,9 +137,39 @@ namespace Framework
                 DebugLog.Error($"EasyAnimationPlayable.CrossFade : アニメーションステートが存在しないため再生できませんでした。{stateName}");
                 return false;
             }
-            
+
+            BlendStopIfNeeded();
+
             target.SetTime(time);
+            target.Play();
             _stateManager.crossFadeTarget = new EasyAnimationStateCrossFade(target, normalizedTransitionDuration);
+
+            return true;
+        }
+
+        public bool Blend(string stateName, float normalizedTransitionDuration, float pointTransitionDuration)
+        {
+            var target  = _stateManager.FindBlend(stateName);
+            if (target == null)
+            {
+                DebugLog.Error($"EasyAnimationPlayable.Blend : ブレンドアニメーションステートが存在しないため再生できませんでした。{stateName}");
+                return false;
+            }
+            
+            target.Play(normalizedTransitionDuration, pointTransitionDuration);
+            _stateManager.targetBlend = target;
+
+            return true;
+        }
+
+        public bool SetBlendParameter(float horizontal, float vertical)
+        {
+            if (_stateManager.targetBlend == null)
+            {
+                return false;
+            }
+            
+            _stateManager.targetBlend.SetPoint(horizontal, vertical);
 
             return true;
         }
@@ -176,7 +223,7 @@ namespace Framework
         
         public bool IsAnythingPlaying()
         {
-            foreach (var state in _stateManager.States)
+            foreach (var state in _stateManager.states)
             {
                 if (state.IsPlaying())
                 {
@@ -191,7 +238,7 @@ namespace Framework
         {
             DebugLog.Normal($"EasyAnimationPlayable.SetSpeed : 再生速度を{speed}にします");
             
-            foreach (var state in _stateManager.States)
+            foreach (var state in _stateManager.states)
             {
                 state.SetSpeed(speed);
             }
@@ -199,14 +246,14 @@ namespace Framework
 
         public float GetSpeed()
         {
-            return _stateManager.States[0].GetSpeed();
+            return _stateManager.states[0].GetSpeed();
         }
 
         public void Stop()
         {
             DebugLog.Normal($"EasyAnimationPlayable.Stop : 停止します");
             
-            foreach (var state in _stateManager.States)
+            foreach (var state in _stateManager.states)
             {
                 state.Stop();
             }
@@ -214,7 +261,7 @@ namespace Framework
 
         public EasyAnimationState GetPlayingState()
         {
-            foreach (var state in _stateManager.States)
+            foreach (var state in _stateManager.states)
             {
                 if (state.IsPlaying())
                 {
@@ -229,7 +276,7 @@ namespace Framework
         {
             List<EasyAnimationState> states = new List<EasyAnimationState>();
             
-            foreach (var state in _stateManager.States)
+            foreach (var state in _stateManager.states)
             {
                 if (state.IsPlaying())
                 {
@@ -242,7 +289,7 @@ namespace Framework
 
         public List<EasyAnimationState> GetAllState()
         {
-            return _stateManager.States;
+            return _stateManager.states;
         }
 
         void UpdateCrossFade(float dt)
@@ -261,7 +308,7 @@ namespace Framework
                 _stateManager.crossFadeTarget = null;
             }
 
-            foreach (var state in _stateManager.States)
+            foreach (var state in _stateManager.states)
             {
                 if (state.index == target.index)
                 {
@@ -271,6 +318,7 @@ namespace Framework
                 if (MathHelper.EqualsZero(state.weight))
                 {
                     _mixer.SetInputWeight(state.index, 0);
+                    state.Stop();
                     continue;
                 }
                 
@@ -278,6 +326,32 @@ namespace Framework
                 _mixer.SetInputWeight(state.index, state.weight);
             }
         }
-        
+
+        void UpdateBlend(float dt)
+        {
+            if (_stateManager.targetBlend == null)
+            {
+                return;
+            }
+            
+            float weight = _stateManager.targetBlend.Weight;
+
+            foreach (var state in _stateManager.states)
+            {
+                state.weight = 1f - weight;
+                _mixer.SetInputWeight(state.index, state.weight);
+            }
+            
+            _stateManager.targetBlend.UpdateWeight( _mixer, dt, weight);
+        }
+
+        void BlendStopIfNeeded()
+        {
+            if (_stateManager.targetBlend != null)
+            {
+                _stateManager.targetBlend = null;
+            }
+        }
+
     }
 }

@@ -4,33 +4,40 @@ namespace Framework
 {
     public class EasyAnimationStateManager
     {
-        List<EasyAnimationState> _states = new List<EasyAnimationState>();
+        public List<EasyAnimationState> states = new List<EasyAnimationState>();
+        
+        public List<EasyAnimationStateBlend> blends = new List<EasyAnimationStateBlend>();
 
-        public List<EasyAnimationState> States => _states;
+        public EasyAnimationStateCrossFade crossFadeTarget;
 
-        public EasyAnimationStateCrossFade crossFadeTarget; 
+        public EasyAnimationStateBlend targetBlend;
 
         public EasyAnimationState Find(string stateName)
         {
-            return _states.Find(x => x.StateName == stateName);
+            return states.Find(x => x.StateName == stateName);
         }
         
         public EasyAnimationState Find(int stateIndex)
         {
-            return _states.Find(x => x.index == stateIndex);
+            return states.Find(x => x.index == stateIndex);
         }
-        
+
+        public EasyAnimationStateBlend FindBlend(string treeName)
+        {
+            return blends.Find(x => x.StateName == treeName);
+        }
+
         public bool Exists(string stateName)
         {
-            return _states.Exists(x => x.StateName == stateName);
+            return states.Exists(x => x.StateName == stateName);
         }
-        
+
         public bool Add(EasyAnimationState addState)
         {
             var findState = Find(addState.StateName);
             if (findState == null)
             {
-                _states.Add(addState);
+                states.Add(addState);
                 DebugLog.Normal($"EasyAnimationStateManager.Add : アニメーションステートを追加しました。{addState}");
                 return true;
             }
@@ -38,30 +45,53 @@ namespace Framework
             DebugLog.Warning($"EasyAnimationStateManager.Add : アニメーションステートが存在しているため、追加に失敗しました。{addState}");
             return false;
         }
-        
-        public bool Remove(EasyAnimationState removeState)
-        {
-            return Remove(removeState.StateName);
-        }
 
-        public bool Remove(string removeState)
+        public bool AddBlend(EasyBlendTree tree)
         {
-            var findState = Find(removeState);
-            if (findState != null)
+            var findState = FindBlend(tree.name);
+            if (findState == null)
             {
-                findState.Destroy();
-                _states.Remove(findState);
-                DebugLog.Normal($"EasyAnimationStateManager.Remove : アニメーションステートを削除しました。{removeState}");
+                blends.Add(new EasyAnimationStateBlend(states, tree));
+                DebugLog.Normal($"EasyAnimationStateManager.AddBlend : ブレンドアニメーションステートを追加しました。{tree.name}");
                 return true;
             }
             
-            DebugLog.Warning($"EasyAnimationStateManager.Remove : アニメーションステートが存在していないため、追加に失敗しました。{removeState}");
+            DebugLog.Warning($"EasyAnimationStateManager.AddBlend : ブレンドアニメーションステートが存在しているため、追加に失敗しました。{tree.name}");
+            return false;
+        }
+
+        public bool Remove(string removeStateName)
+        {
+            var findState = Find(removeStateName);
+            if (findState != null)
+            {
+                findState.Destroy();
+                states.Remove(findState);
+                DebugLog.Normal($"EasyAnimationStateManager.Remove : アニメーションステートを削除しました。{removeStateName}");
+                return true;
+            }
+            
+            DebugLog.Warning($"EasyAnimationStateManager.Remove : アニメーションステートが存在していないため、追加に失敗しました。{removeStateName}");
+            return false;
+        }
+        
+        public bool RemoveBlend(string removeStateName)
+        {
+            var findState = FindBlend(removeStateName);
+            if (findState != null)
+            {
+                blends.Remove(findState);
+                DebugLog.Normal($"EasyAnimationStateManager.RemoveBlend : ブレンドアニメーションステートを削除しました。{removeStateName}");
+                return true;
+            }
+            
+            DebugLog.Warning($"EasyAnimationStateManager.RemoveBlend : ブレンドアニメーションステートが存在していないため、追加に失敗しました。{removeStateName}");
             return false;
         }
 
         public int Count()
         {
-            return _states.Count;
+            return states.Count;
         }
     }
 }

@@ -7,8 +7,9 @@ namespace FrameworkEditor
 {
     public class GenerateCleanArchitectureCodeEditorWindow : EditorWindow
     {
-        const string ITEM_NAME = "Framework/CleanArchitecture Generate Window";
+        const string ITEM_NAME = "Framework/CleanArchitecture生成";
         const string WINDOW_TITLE = "CleanArchitecture Generate Window";
+        const string EXPORT_PATH = "/Framework/Editor/CleanArchitecture/";
         
         string _namespace;
         string _className;
@@ -84,7 +85,7 @@ namespace FrameworkEditor
             stringBuilder.AppendLine("    }");
             stringBuilder.AppendLine("}");
 
-            string path = Application.dataPath + "/Framework/Script/CleanArchitecture/Editor/" + _className + "UseCase.cs";
+            string path = Application.dataPath + EXPORT_PATH + _className + "UseCase.cs";
             FileUtil.SaveText(stringBuilder.ToString(), path);
             Debug.Log(path+"に生成しました");
         }
@@ -106,7 +107,7 @@ namespace FrameworkEditor
             stringBuilder.AppendLine("    }");
             stringBuilder.AppendLine("}");
 
-            string path = Application.dataPath + "/Framework/Script/CleanArchitecture/Editor/" + _className + "Container.cs";
+            string path = Application.dataPath + EXPORT_PATH + _className + "Container.cs";
             FileUtil.SaveText(stringBuilder.ToString(), path);
             Debug.Log(path+"に生成しました");
         }
@@ -127,7 +128,7 @@ namespace FrameworkEditor
             stringBuilder.AppendLine("    }");
             stringBuilder.AppendLine("}");
 
-            string path = Application.dataPath + "/Framework/Script/CleanArchitecture/Editor/" + _className + "Presenter.cs";
+            string path = Application.dataPath + EXPORT_PATH + _className + "Presenter.cs";
             FileUtil.SaveText(stringBuilder.ToString(), path);
             Debug.Log(path+"に生成しました");
         }
@@ -147,7 +148,7 @@ namespace FrameworkEditor
             stringBuilder.AppendLine("    }");
             stringBuilder.AppendLine("}");
 
-            string path = Application.dataPath + "/Framework/Script/CleanArchitecture/Editor/" + _className + "View.cs";
+            string path = Application.dataPath + EXPORT_PATH + _className + "View.cs";
             FileUtil.SaveText(stringBuilder.ToString(), path);
             Debug.Log(path+"に生成しました");
         }
@@ -168,7 +169,7 @@ namespace FrameworkEditor
             stringBuilder.AppendLine("    }");
             stringBuilder.AppendLine("}");
 
-            string path = Application.dataPath + "/Framework/Script/CleanArchitecture/Editor/" + _className + "UseCase.cs";
+            string path = Application.dataPath + EXPORT_PATH + _className + "UseCase.cs";
             FileUtil.SaveText(stringBuilder.ToString(), path);
             Debug.Log(path+"に生成しました");
         }
@@ -189,7 +190,7 @@ namespace FrameworkEditor
             stringBuilder.AppendLine("    }");
             stringBuilder.AppendLine("}");
 
-            string path = Application.dataPath + "/Framework/Script/CleanArchitecture/Editor/" + _className + "Container.cs";
+            string path = Application.dataPath + EXPORT_PATH + _className + "Container.cs";
             FileUtil.SaveText(stringBuilder.ToString(), path);
             Debug.Log(path+"に生成しました");
         }

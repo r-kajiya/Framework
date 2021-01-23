@@ -2,23 +2,31 @@
 
 namespace Framework
 {
-    public interface ITransitionParam { }
-
-    public interface IStateMachine
+    public interface IStateMachine<out TContext>
+        where TContext : IStateContext
     {
-        bool Dispatch(int key, ITransitionParam transitionParam);
+        bool Dispatch(int key, ITransitionParameter transitionParameter);
+        TContext Context { get; }
     }
 
-	public abstract class StateMachine<TState> : IStateMachine
+	public abstract class StateMachine<TState, TContext> : IStateMachine<TContext>
         where TState : State
+        where TContext : IStateContext
     {
-        TState _curState;
+        TState _currentState;
         TState _nextState;
-        ITransitionParam _transitionParam;
+        ITransitionParameter _transitionParameter;
 
-        Dictionary<int, TState> _states = new Dictionary<int, TState>();
+        readonly Dictionary<int, TState> _states = new Dictionary<int, TState>();
 
-        public int CurStateKey { get; private set; }
+        public int CurrentStateKey { get; private set; }
+
+        public TContext Context { get; private set; }
+
+        public StateMachine(TContext context)
+        {
+            Context = context;
+        }
 
         public bool Register(TState state, int key)
         {
@@ -32,15 +40,13 @@ namespace Framework
             return true;
         }
 
-        public bool Dispatch(int key, ITransitionParam transitionParam = null)
+        public bool Dispatch(int key, ITransitionParameter transitionParameter = null)
         {
-            TState next = null;
-
-            if (_states.TryGetValue(key, out next))
+            if (_states.TryGetValue(key, out var next))
             {
                 _nextState = next;
-                CurStateKey = key;
-                _transitionParam = transitionParam;
+                CurrentStateKey = key;
+                _transitionParameter = transitionParameter;
                 return true;
             }
 
@@ -51,34 +57,18 @@ namespace Framework
         {
             if (_nextState != null)
             {
-                if (_curState != null)
-                {
-                    _curState.Exit();
-                }
-                
-                _curState = _nextState;
-                _curState.Enter(_transitionParam);
+                _currentState?.Exit();
+                _currentState = _nextState;
+                _currentState.Enter(_transitionParameter);
                 _nextState = null;
-                _transitionParam = null;
+                _transitionParameter = null;
             }
 
-            if (_curState != null)
+            if (_currentState != null)
             {
-                _curState.Update();
+                _currentState.Update();
+                _currentState.TransitionIfNeeded();
             }
         }
 	}
-
-    public abstract class State
-    {
-        protected IStateMachine StateMachine { get; private set; }
-        public State(IStateMachine stateMachine)
-        {
-            StateMachine = stateMachine;
-        }
-        public virtual void Enter(ITransitionParam transitionParam) { }
-        public virtual void Update() { }
-        public virtual void Exit() { }
-        protected void Dispatch(int key, ITransitionParam transitionParam = null) { StateMachine.Dispatch(key, transitionParam); }
-    }
 }

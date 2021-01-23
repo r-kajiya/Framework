@@ -28,7 +28,7 @@ namespace Framework
             this.horizontal = horizontal;
             this.distance = distance;
             this.center = center;
-            smoothDumpCenterVelocity = VectorHelper.ZERO_3;
+            smoothDumpCenterVelocity = VectorHelper.zero3;
             smoothDumpVerticalVelocity = 0f;
             smoothDumpHorizontalVelocity = 0f;
             smoothDumpDistanceVelocity = 0f;

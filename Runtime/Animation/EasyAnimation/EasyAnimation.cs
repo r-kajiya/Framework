@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Playables;
 
@@ -11,15 +11,22 @@ namespace Framework
         bool _playAutomaticallyOnInitialize = false;
         
         [SerializeField]
-        AnimationClip[] _animationClips = null;
+        List<AnimationClip> _animationClips = null;
+
+        [SerializeField]
+        EasyBlendTree[] _blendTrees = null;
 
         EasyAnimationPlayable _playable;
         PlayableGraph _playableGraph;
         Animator _animator;
         float _speedTemp;
+        Vector3 _rootAnimationDeltaPosition;
+        Quaternion _rootAnimationDeltaRotation;
 
         public Animator Animator => _animator;
-        public AnimationClip[] AnimationClips => _animationClips;
+        public List<AnimationClip> AnimationClips => _animationClips;
+        public Vector3 RootAnimationDeltaPosition => _rootAnimationDeltaPosition;
+        public Quaternion RootAnimationDeltaRotation => _rootAnimationDeltaRotation;
 
         public void Initialize()
         {
@@ -32,9 +39,27 @@ namespace Framework
             var playable = ScriptPlayable<EasyAnimationPlayable>.Create(_playableGraph, template, 1);
             _playable = playable.GetBehaviour();
 
+            foreach (var blendTree in _blendTrees)
+            {
+                foreach (var blendMotion in blendTree.BlendMotions)
+                {
+                    var animationClip = blendMotion.Motion as AnimationClip;
+
+                    if (!_animationClips.Contains(animationClip))
+                    {
+                        _animationClips.Add(animationClip);
+                    }
+                }
+            }
+
             foreach (var animationClip in _animationClips)
             {
                 _playable.Add(animationClip, animationClip.name);
+            }
+
+            foreach (var blendTree in _blendTrees)
+            {
+                _playable.AddBlend(blendTree);
             }
 
             AnimationPlayableUtilities.Play(_animator, _playable.Self, _playableGraph);
@@ -102,6 +127,16 @@ namespace Framework
         public bool CrossFade(string stateName, float time, float normalizedTransitionDuration)
         {
             return _playable.CrossFade(stateName, time, normalizedTransitionDuration);
+        }
+
+        public bool Blend(string blendTreeName, float normalizedTransitionDuration, float pointTransitionDuration)
+        {
+            return _playable.Blend(blendTreeName, normalizedTransitionDuration, pointTransitionDuration);
+        }
+        
+        public bool SetBlendParameter(float horizontal, float vertical)
+        {
+            return _playable.SetBlendParameter(horizontal, vertical);
         }
         
         public bool IsPlaying(string stateName)
@@ -175,6 +210,24 @@ namespace Framework
             }
 
             return output;
+        }
+
+        void OnAnimatorMove()
+        {
+            if (Animator == null)
+            {
+                return;
+            }
+
+            _rootAnimationDeltaPosition = Animator.deltaPosition;
+            _rootAnimationDeltaRotation = Animator.deltaRotation;
+
+            // float angleInDegrees;
+            // Vector3 rotationAxis;
+            // animDeltaRotation.ToAngleAxis(out angleInDegrees, out rotationAxis);
+            //
+            // Vector3 angularDisplacement = rotationAxis * angleInDegrees * Mathf.Deg2Rad;
+            // Vector3 animAngularVelocity = angularDisplacement / Time.deltaTime;
         }
     }
 }

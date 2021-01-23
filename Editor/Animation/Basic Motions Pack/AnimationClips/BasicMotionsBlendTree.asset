@@ -1,0 +1,230 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 37ad4aaa7c17400f97ec4dc4a3388ffd, type: 3}
+  m_Name: BasicMotionsBlendTree
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects:
+    - {fileID: 20600000, guid: 436c4aa1f7240404294b83c3cfc69112, type: 2}
+    - {fileID: 7400000, guid: 8a47017e16c034412af7980b38cbd719, type: 2}
+    - {fileID: 7400000, guid: 666bd638dfc6c44b9b2bbba9cba55faa, type: 2}
+    - {fileID: 7400000, guid: be5996d2643ee46748e29fc2963f5f23, type: 2}
+    - {fileID: 7400000, guid: 6dc976338a67b4c49b1bff7eceeb9084, type: 2}
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: _blendTree
+      Entry: 10
+      Data: 0
+    - Name: _blendType
+      Entry: 3
+      Data: 3
+    - Name: _blendParameter
+      Entry: 1
+      Data: Vertical
+    - Name: _maxThreshold
+      Entry: 4
+      Data: 1
+    - Name: _minThreshold
+      Entry: 4
+      Data: 0
+    - Name: _blendParameterY
+      Entry: 1
+      Data: Horizontal
+    - Name: _useAutomaticThresholds
+      Entry: 5
+      Data: true
+    - Name: _apparentSpeed
+      Entry: 4
+      Data: 0
+    - Name: _averageDuration
+      Entry: 4
+      Data: 1.25833344
+    - Name: _averageSpeed
+      Entry: 7
+      Data: UnityEngine.Vector3, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: _isHumanMotion
+      Entry: 5
+      Data: true
+    - Name: _blendMotions
+      Entry: 7
+      Data: 0|System.Collections.Generic.List`1[[Framework.EasyBlendMotion, Assembly-Framework]],
+        mscorlib
+    - Name: 
+      Entry: 12
+      Data: 4
+    - Name: 
+      Entry: 7
+      Data: 1|Framework.EasyBlendMotion, Assembly-Framework
+    - Name: _motion
+      Entry: 10
+      Data: 1
+    - Name: _threshold
+      Entry: 4
+      Data: 0
+    - Name: _position
+      Entry: 7
+      Data: UnityEngine.Vector2, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: _timeScale
+      Entry: 4
+      Data: 1
+    - Name: _cycleOffset
+      Entry: 4
+      Data: 0
+    - Name: _directBlendParameter
+      Entry: 1
+      Data: Vertical
+    - Name: _mirror
+      Entry: 5
+      Data: false
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 2|Framework.EasyBlendMotion, Assembly-Framework
+    - Name: _motion
+      Entry: 10
+      Data: 2
+    - Name: _threshold
+      Entry: 4
+      Data: 0.333333343
+    - Name: _position
+      Entry: 7
+      Data: UnityEngine.Vector2, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0.5
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: _timeScale
+      Entry: 4
+      Data: 1
+    - Name: _cycleOffset
+      Entry: 4
+      Data: 0
+    - Name: _directBlendParameter
+      Entry: 1
+      Data: Vertical
+    - Name: _mirror
+      Entry: 5
+      Data: false
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 3|Framework.EasyBlendMotion, Assembly-Framework
+    - Name: _motion
+      Entry: 10
+      Data: 3
+    - Name: _threshold
+      Entry: 4
+      Data: 0.6666667
+    - Name: _position
+      Entry: 7
+      Data: UnityEngine.Vector2, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: _timeScale
+      Entry: 4
+      Data: 1
+    - Name: _cycleOffset
+      Entry: 4
+      Data: 0
+    - Name: _directBlendParameter
+      Entry: 1
+      Data: Vertical
+    - Name: _mirror
+      Entry: 5
+      Data: false
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 4|Framework.EasyBlendMotion, Assembly-Framework
+    - Name: _motion
+      Entry: 10
+      Data: 4
+    - Name: _threshold
+      Entry: 4
+      Data: 1
+    - Name: _position
+      Entry: 7
+      Data: UnityEngine.Vector2, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: -0.5
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: _timeScale
+      Entry: 4
+      Data: 1
+    - Name: _cycleOffset
+      Entry: 4
+      Data: 0
+    - Name: _directBlendParameter
+      Entry: 1
+      Data: Vertical
+    - Name: _mirror
+      Entry: 5
+      Data: false
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 

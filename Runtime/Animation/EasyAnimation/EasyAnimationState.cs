@@ -10,6 +10,7 @@ namespace Framework
         readonly string _stateName;
         readonly AnimationClip _clip;
         readonly WrapMode _wrapMode;
+        
         public Playable Playable => _playable;
         public string StateName => _stateName;
         public AnimationClip Clip => _clip;
@@ -17,7 +18,7 @@ namespace Framework
 
         public float weight;
         public int index;
-
+        
         public EasyAnimationState(AnimationClip clip, string stateName, PlayableGraph graph)
         {
             _stateName = stateName;
@@ -90,48 +91,6 @@ namespace Framework
         public override string ToString()
         {
             return $"{_stateName}:{index}:{weight}:{WrapMode}:{_clip.length}";
-        }
-    }
-    
-    public class EasyAnimationStateCrossFade
-    {
-        readonly EasyAnimationState _state;
-        readonly float _normalizedTransitionDuration;
-
-        public EasyAnimationState State => _state;
-
-        public EasyAnimationStateCrossFade(EasyAnimationState state, float normalizedTransitionDuration)
-        {
-            _state = state;
-            _normalizedTransitionDuration = normalizedTransitionDuration;
-        }
-
-        public float UpdateWeight(float dt)
-        {
-            float otherWeight = 0f;
-            
-            if (MathHelper.EqualsZero(_normalizedTransitionDuration))
-            {
-                _state.weight = 1f;
-                return otherWeight;
-            }
-            
-            float oneFrameAddWeight = dt * (1f / _normalizedTransitionDuration);
-            _state.weight += oneFrameAddWeight;
-            otherWeight = 1 - _state.weight;
-
-            if (_state.weight >= 1f)
-            {
-                _state.weight = 1f;
-                otherWeight = 0f;
-            }
-
-            return otherWeight;
-        }
-
-        public bool IsFinish()
-        {
-            return _state.weight >= 1f;
         }
     }
 }

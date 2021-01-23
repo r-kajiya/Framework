@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
+using UnityEngine.UI;
 
 namespace Framework
 {
@@ -15,9 +17,23 @@ namespace Framework
         
         [SerializeField, Range(0, 3)]
         float normalizedTransitionDuration = 0.3f;
+
+        [SerializeField]
+        Text _horizontalText;
+        
+        [SerializeField]
+        Text _verticalText;
+
+        [SerializeField, Range(0.01f, 1.0f)]
+        float _blendValue;
+
+        float _horizontal;
+        float _vertical;
         
         void Start()
         {
+            _verticalText.text = _vertical.ToString();
+            _horizontalText.text = _horizontal.ToString();
             _easyAnimation.Initialize();
         }
 
@@ -94,6 +110,39 @@ namespace Framework
         public void Resume()
         {
             _easyAnimation.Resume();
+        }
+
+        public void Blend()
+        {
+            _easyAnimation.Blend("BasicMotionsBlendTree", 0.3f, 0.3f);
+        }
+
+        public void VerticalUp()
+        {
+            _vertical += _blendValue;
+            _verticalText.text = _vertical.ToString();
+            _easyAnimation.SetBlendParameter(_horizontal, _vertical);
+        }
+        
+        public void VerticalDown()
+        {
+            _vertical -= _blendValue;
+            _verticalText.text = _vertical.ToString();
+            _easyAnimation.SetBlendParameter(_horizontal, _vertical);
+        }
+        
+        public void HorizontalUp()
+        {
+            _horizontal += _blendValue;
+            _horizontalText.text = _horizontal.ToString();
+            _easyAnimation.SetBlendParameter(_horizontal, _vertical);
+        }
+        
+        public void HorizontalDown()
+        {
+            _horizontal -= _blendValue;
+            _horizontalText.text = _horizontal.ToString();
+            _easyAnimation.SetBlendParameter(_horizontal, _vertical);
         }
     }
 }

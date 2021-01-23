@@ -184,8 +184,8 @@ MonoBehaviour:
       Entry: 10
       Data: 0
     - Name: _effectParentName
-      Entry: 6
-      Data: 
+      Entry: 1
+      Data: B-hand_R
 --- !u!114 &3367961167691268177
 MonoBehaviour:
   m_ObjectHideFlags: 0

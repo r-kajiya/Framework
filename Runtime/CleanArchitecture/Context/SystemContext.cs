@@ -11,6 +11,8 @@ namespace Framework
         protected static Dictionary<string, SystemContext> SystemContexts => systemContexts;
 
         protected Dictionary<int, IUseCase> UseCases { get; } = new Dictionary<int, IUseCase>();
+
+        bool _isCurrent;
         
         public override void Run()
         {
@@ -37,6 +39,11 @@ namespace Framework
         
         void Update()
         {
+            if (!_isCurrent)
+            {
+                return;
+            }
+            
             float dt = Time.deltaTime;
 
             OnUpdate(dt);
@@ -89,6 +96,8 @@ namespace Framework
 
             IEnumerator DoExecute(SystemContext self, SystemContext next, SystemContextContainer container)
             {
+                self._isCurrent = false;
+                
                 yield return OnCurPreUnload?.Invoke();
                 yield return self.DoPreUnload();
 
@@ -97,7 +106,7 @@ namespace Framework
 
                 yield return OnCurUnloaded?.Invoke();
                 yield return self.DoUnloaded();
-                
+
                 yield return OnNextPreLoad?.Invoke();
                 yield return next.DoPreLoad(container);
 
@@ -106,6 +115,8 @@ namespace Framework
 
                 yield return OnNextLoaded?.Invoke();
                 yield return next.DoLoaded(container);
+
+                next._isCurrent = true;
             }
         }
     }

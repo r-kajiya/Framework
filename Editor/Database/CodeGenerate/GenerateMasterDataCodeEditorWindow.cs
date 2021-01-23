@@ -10,7 +10,7 @@ namespace FrameworkEditor
 {
     public class GenerateMasterDataCodeEditorWindow : EditorWindow
     {
-        const string ITEM_NAME = "Framework/MasterDataCode Generate Window";
+        const string ITEM_NAME = "Framework/マスターデータ定義生成";
         const string WINDOW_TITLE = "MasterDataCode Generate Window";
         
         
