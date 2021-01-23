@@ -10,7 +10,6 @@ namespace Framework
         Playable _self;
         AnimationMixerPlayable _mixer;
         PlayableGraph _graph;
-        List<EasyAnimationState> _pauseStates;
         readonly EasyAnimationStateManager _stateManager;
 
         public Playable Self => _self;
@@ -45,7 +44,8 @@ namespace Framework
                 return false;
             }
             
-            newState.index = _stateManager.Count() - 1;
+            newState.Stop();
+            newState.index = _stateManager.AllCount() - 1;
             int inputCount = newState.index + 1;
             _mixer.SetInputCount(inputCount);
             _graph.Connect(newState.Playable, 0, _mixer, newState.index);
@@ -60,7 +60,9 @@ namespace Framework
         
         public bool AddBlend(EasyBlendTree blendTree)
         {
-            if (!_stateManager.AddBlend(blendTree))
+            int startIndex = _stateManager.AllCount();
+            
+            if (!_stateManager.AddBlend(blendTree, _graph, _mixer, startIndex))
             {
                 return false;
             }
@@ -155,7 +157,13 @@ namespace Framework
                 DebugLog.Error($"EasyAnimationPlayable.Blend : ブレンドアニメーションステートが存在しないため再生できませんでした。{stateName}");
                 return false;
             }
-            
+
+            if (_stateManager.targetBlend?.StateName == target.StateName)
+            {
+                DebugLog.Warning($"EasyAnimationPlayable.Blend : 再生中のブレンドアニメーションステートを再生しようとしたためキャンセルしました。{stateName}");
+                return false;
+            }
+
             target.Play(normalizedTransitionDuration, pointTransitionDuration);
             _stateManager.targetBlend = target;
 
@@ -305,6 +313,22 @@ namespace Framework
 
             if (_stateManager.crossFadeTarget.IsFinish())
             {
+                foreach (var state in _stateManager.states)
+                {
+                    if (state.index == target.index)
+                    {
+                        continue;
+                    }
+                    
+                    state.Stop();
+                    _mixer.SetInputWeight(state.index, 0);
+                }
+                
+                foreach (var blend in _stateManager.blends)
+                {
+                    blend.Stop(_mixer);
+                }
+                
                 _stateManager.crossFadeTarget = null;
             }
 
@@ -315,15 +339,24 @@ namespace Framework
                     continue;
                 }
                 
-                if (MathHelper.EqualsZero(state.weight))
+                if (state.weight.EqualsZero())
                 {
-                    _mixer.SetInputWeight(state.index, 0);
                     state.Stop();
+                    _mixer.SetInputWeight(state.index, 0);
                     continue;
                 }
                 
                 state.weight = otherWeight;
                 _mixer.SetInputWeight(state.index, state.weight);
+            }
+            
+            foreach (var blend in _stateManager.blends)
+            {
+                if (!blend.weight.EqualsZero())
+                {
+                    blend.weight = otherWeight;
+                    blend.UpdateWeight(_mixer, dt);
+                }
             }
         }
 
@@ -334,15 +367,63 @@ namespace Framework
                 return;
             }
             
-            float weight = _stateManager.targetBlend.Weight;
+            _stateManager.targetBlend.UpdateWeight(_mixer, dt);
 
-            foreach (var state in _stateManager.states)
+            if (!_stateManager.targetBlend.IsTransitionFinish())
             {
-                state.weight = 1f - weight;
-                _mixer.SetInputWeight(state.index, state.weight);
-            }
+                float otherWeight = _stateManager.targetBlend.UpdateTransitionWeight(dt);
+
+                foreach (var state in _stateManager.states)
+                {
+                    if (state.weight.EqualsZero())
+                    {
+                        state.Stop();
+                        _mixer.SetInputWeight(state.index, 0);
+                        continue;
+                    }
+                
+                    state.weight = otherWeight;
+                    _mixer.SetInputWeight(state.index, state.weight);
+                }
             
-            _stateManager.targetBlend.UpdateWeight( _mixer, dt, weight);
+                foreach (var blend in _stateManager.blends)
+                {
+                    if (blend.StateName == _stateManager.targetBlend.StateName)
+                    {
+                        continue;
+                    }
+                
+                    if (!blend.weight.EqualsZero())
+                    {
+                        blend.UpdateWeight(_mixer, dt);
+                    }
+                }
+
+                if (_stateManager.targetBlend.IsTransitionFinish())
+                {
+                    foreach (var state in _stateManager.states)
+                    {
+                        if (state.IsPlaying())
+                        {
+                            state.Stop();
+                            _mixer.SetInputWeight(state.index, 0);    
+                        }
+                    }
+                
+                    foreach (var blend in _stateManager.blends)
+                    {
+                        if (blend.StateName == _stateManager.targetBlend.StateName)
+                        {
+                            continue;
+                        }
+                        
+                        if (blend.IsPlaying())
+                        {
+                            blend.Stop(_mixer);   
+                        }
+                    }
+                }
+            }
         }
 
         void BlendStopIfNeeded()

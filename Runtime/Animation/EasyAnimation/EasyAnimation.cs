@@ -39,6 +39,16 @@ namespace Framework
             var playable = ScriptPlayable<EasyAnimationPlayable>.Create(_playableGraph, template, 1);
             _playable = playable.GetBehaviour();
 
+            foreach (var animationClip in _animationClips)
+            {
+                _playable.Add(animationClip, animationClip.name);
+            }
+
+            foreach (var blendTree in _blendTrees)
+            {
+                _playable.AddBlend(blendTree);
+            }
+            
             foreach (var blendTree in _blendTrees)
             {
                 foreach (var blendMotion in blendTree.BlendMotions)
@@ -50,16 +60,6 @@ namespace Framework
                         _animationClips.Add(animationClip);
                     }
                 }
-            }
-
-            foreach (var animationClip in _animationClips)
-            {
-                _playable.Add(animationClip, animationClip.name);
-            }
-
-            foreach (var blendTree in _blendTrees)
-            {
-                _playable.AddBlend(blendTree);
             }
 
             AnimationPlayableUtilities.Play(_animator, _playable.Self, _playableGraph);

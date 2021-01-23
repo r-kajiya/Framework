@@ -144,6 +144,21 @@ namespace Framework
             _horizontalText.text = _horizontal.ToString();
             _easyAnimation.SetBlendParameter(_horizontal, _vertical);
         }
+
+        public void OnTS1xButton()
+        {
+            Time.timeScale = 1f;
+        }
+        
+        public void OnTS05xButton()
+        {
+            Time.timeScale = 0.1f;
+        }
+        
+        public void OnTS01xButton()
+        {
+            Time.timeScale = 0.01f;
+        }
     }
 }
 

@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using UnityEngine.Animations;
+using UnityEngine.Playables;
 
 namespace Framework
 {
@@ -42,21 +44,21 @@ namespace Framework
                 return true;
             }
             
-            DebugLog.Warning($"EasyAnimationStateManager.Add : アニメーションステートが存在しているため、追加に失敗しました。{addState}");
+            DebugLog.Warning($"EasyAnimationStateManager.Add : 同名アニメーションステートが存在しているため、追加に失敗しました。{addState}");
             return false;
         }
 
-        public bool AddBlend(EasyBlendTree tree)
+        public bool AddBlend(EasyBlendTree tree, PlayableGraph graph, AnimationMixerPlayable mixer, int stateIndex)
         {
             var findState = FindBlend(tree.name);
             if (findState == null)
             {
-                blends.Add(new EasyAnimationStateBlend(states, tree));
+                blends.Add(new EasyAnimationStateBlend(tree, graph, mixer, stateIndex));
                 DebugLog.Normal($"EasyAnimationStateManager.AddBlend : ブレンドアニメーションステートを追加しました。{tree.name}");
                 return true;
             }
             
-            DebugLog.Warning($"EasyAnimationStateManager.AddBlend : ブレンドアニメーションステートが存在しているため、追加に失敗しました。{tree.name}");
+            DebugLog.Warning($"EasyAnimationStateManager.AddBlend : 同名ブレンドアニメーションステートが存在しているため、追加に失敗しました。{tree.name}");
             return false;
         }
 
@@ -92,6 +94,18 @@ namespace Framework
         public int Count()
         {
             return states.Count;
+        }
+
+        public int AllCount()
+        {
+            int count = states.Count;
+
+            foreach (var blend in blends)
+            {
+                count += blend.MotionCount;
+            }
+
+            return count;
         }
     }
 }

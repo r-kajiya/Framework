@@ -23,27 +23,30 @@ namespace Framework
         }
 
         readonly List<Map> _maps = new List<Map>();
-        float _normalizedTransitionDuration = 0.3f;
         float _pointTransitionDuration = 0.3f;
+        float _normalizedTransitionDuration = 0.3f;
+        public float NormalizedTransitionDuration => _normalizedTransitionDuration;
         Destination2D _destinationPoint;
-        Destination _destinationTransition;
         readonly string _stateName;
         public string StateName => _stateName;
-        public float Weight => _destinationTransition.Current();
+        public float weight;
+        public int MotionCount => _maps.Count;
 
-        public EasyAnimationStateBlend(List<EasyAnimationState> allStates, EasyBlendTree tree)
+        public EasyAnimationStateBlend(EasyBlendTree tree, PlayableGraph graph, AnimationMixerPlayable mixer, int startIndex)
         {
             _stateName = tree.name;
 
-            foreach (var state in allStates)
+            for (int i = 0; i < tree.BlendMotions.Count; i++)
             {
-                foreach (var blend in tree.BlendMotions)
-                {
-                    if (state.StateName == blend.Motion.name)
-                    {
-                        _maps.Add(new Map(state, blend));
-                    }
-                }
+                var blendMotion = tree.BlendMotions[i];
+                var clip = blendMotion.Motion as AnimationClip;
+                string motionName = _stateName + "_" + clip.name;
+                EasyAnimationState state = new EasyAnimationState(clip, motionName, graph);
+                state.index = startIndex + i;
+                _maps.Add(new Map(state, blendMotion));
+                mixer.SetInputCount(state.index + 1);
+                graph.Connect(state.Playable, 0, mixer, state.index);
+                state.Stop();
             }
         }
 
@@ -59,8 +62,20 @@ namespace Framework
             }
             
             SetPoint(0f, 0f);
-            
-            _destinationTransition.Start(0.0f, 1.0f, _normalizedTransitionDuration);
+            weight = 0f;
+        }
+
+        public bool IsPlaying()
+        {
+            foreach (var map in _maps)
+            {
+                if (map.State.IsPlaying())
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         public void Stop(AnimationMixerPlayable mixer)
@@ -71,7 +86,10 @@ namespace Framework
                 map.State.Stop();
                 mixer.SetInputWeight(map.State.index, map.State.weight);
             }
+
+            weight = 0f;
         }
+        
 
         public void SetPoint(float horizontal, float vertical)
         {
@@ -79,9 +97,8 @@ namespace Framework
             _destinationPoint.Start(_destinationPoint.Current(), destination, _pointTransitionDuration);
         }
 
-        public void UpdateWeight(AnimationMixerPlayable mixer, float dt, float blendWeight)
+        public void UpdateWeight(AnimationMixerPlayable mixer, float dt)
         {
-            _destinationTransition.Update(dt);
             _destinationPoint.Update(dt);
             Vector2 point = _destinationPoint.Current();
 
@@ -115,9 +132,37 @@ namespace Framework
 
             foreach (var map in _maps)
             {
-                map.State.weight = map.State.weight / totalWeight * blendWeight;
+                map.State.weight = (map.State.weight / totalWeight) * weight;
                 mixer.SetInputWeight(map.State.index, map.State.weight);
             }
+        }
+        
+        public float UpdateTransitionWeight(float dt)
+        {
+            float otherWeight = 0f;
+
+            if (MathHelper.EqualsZero(_normalizedTransitionDuration))
+            {
+                weight = 1f;
+                return otherWeight;
+            }
+            
+            float oneFrameAddWeight = dt * (1f / _normalizedTransitionDuration);
+            weight += oneFrameAddWeight;
+            otherWeight = 1 - weight;
+
+            if (weight >= 1f)
+            {
+                weight = 1f;
+                otherWeight = 0f;
+            }
+            
+            return otherWeight;
+        }
+        
+        public bool IsTransitionFinish()
+        {
+            return weight >= 1f;
         }
     }
 }
