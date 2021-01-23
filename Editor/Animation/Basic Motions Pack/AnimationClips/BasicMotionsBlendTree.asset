@@ -29,48 +29,6 @@ MonoBehaviour:
     - Name: _blendTree
       Entry: 10
       Data: 0
-    - Name: _blendType
-      Entry: 3
-      Data: 3
-    - Name: _blendParameter
-      Entry: 1
-      Data: Vertical
-    - Name: _maxThreshold
-      Entry: 4
-      Data: 1
-    - Name: _minThreshold
-      Entry: 4
-      Data: 0
-    - Name: _blendParameterY
-      Entry: 1
-      Data: Horizontal
-    - Name: _useAutomaticThresholds
-      Entry: 5
-      Data: true
-    - Name: _apparentSpeed
-      Entry: 4
-      Data: 0
-    - Name: _averageDuration
-      Entry: 4
-      Data: 1.25833344
-    - Name: _averageSpeed
-      Entry: 7
-      Data: UnityEngine.Vector3, UnityEngine.CoreModule
-    - Name: 
-      Entry: 4
-      Data: 0
-    - Name: 
-      Entry: 4
-      Data: 0
-    - Name: 
-      Entry: 4
-      Data: 0
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: _isHumanMotion
-      Entry: 5
-      Data: true
     - Name: _blendMotions
       Entry: 7
       Data: 0|System.Collections.Generic.List`1[[Framework.EasyBlendMotion, Assembly-Framework]],
@@ -84,9 +42,6 @@ MonoBehaviour:
     - Name: _motion
       Entry: 10
       Data: 1
-    - Name: _threshold
-      Entry: 4
-      Data: 0
     - Name: _position
       Entry: 7
       Data: UnityEngine.Vector2, UnityEngine.CoreModule
@@ -99,18 +54,6 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
-    - Name: _timeScale
-      Entry: 4
-      Data: 1
-    - Name: _cycleOffset
-      Entry: 4
-      Data: 0
-    - Name: _directBlendParameter
-      Entry: 1
-      Data: Vertical
-    - Name: _mirror
-      Entry: 5
-      Data: false
     - Name: 
       Entry: 8
       Data: 
@@ -120,9 +63,6 @@ MonoBehaviour:
     - Name: _motion
       Entry: 10
       Data: 2
-    - Name: _threshold
-      Entry: 4
-      Data: 0.333333343
     - Name: _position
       Entry: 7
       Data: UnityEngine.Vector2, UnityEngine.CoreModule
@@ -135,18 +75,6 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
-    - Name: _timeScale
-      Entry: 4
-      Data: 1
-    - Name: _cycleOffset
-      Entry: 4
-      Data: 0
-    - Name: _directBlendParameter
-      Entry: 1
-      Data: Vertical
-    - Name: _mirror
-      Entry: 5
-      Data: false
     - Name: 
       Entry: 8
       Data: 
@@ -156,9 +84,6 @@ MonoBehaviour:
     - Name: _motion
       Entry: 10
       Data: 3
-    - Name: _threshold
-      Entry: 4
-      Data: 0.6666667
     - Name: _position
       Entry: 7
       Data: UnityEngine.Vector2, UnityEngine.CoreModule
@@ -171,18 +96,6 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
-    - Name: _timeScale
-      Entry: 4
-      Data: 1
-    - Name: _cycleOffset
-      Entry: 4
-      Data: 0
-    - Name: _directBlendParameter
-      Entry: 1
-      Data: Vertical
-    - Name: _mirror
-      Entry: 5
-      Data: false
     - Name: 
       Entry: 8
       Data: 
@@ -192,9 +105,6 @@ MonoBehaviour:
     - Name: _motion
       Entry: 10
       Data: 4
-    - Name: _threshold
-      Entry: 4
-      Data: 1
     - Name: _position
       Entry: 7
       Data: UnityEngine.Vector2, UnityEngine.CoreModule
@@ -207,18 +117,6 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
-    - Name: _timeScale
-      Entry: 4
-      Data: 1
-    - Name: _cycleOffset
-      Entry: 4
-      Data: 0
-    - Name: _directBlendParameter
-      Entry: 1
-      Data: Vertical
-    - Name: _mirror
-      Entry: 5
-      Data: false
     - Name: 
       Entry: 8
       Data: 

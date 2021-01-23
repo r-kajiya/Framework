@@ -32,7 +32,8 @@ namespace Framework
         public float weight;
         public int MotionCount => _maps.Count;
 
-        public EasyAnimationStateBlend(EasyBlendTree tree, PlayableGraph graph, AnimationMixerPlayable mixer, int startIndex)
+        public EasyAnimationStateBlend(EasyBlendTree tree, PlayableGraph graph, AnimationMixerPlayable mixer,
+            int startIndex)
         {
             _stateName = tree.name;
 
@@ -60,7 +61,7 @@ namespace Framework
                 map.State.SetTime(0f);
                 map.State.Play();
             }
-            
+
             SetPoint(0f, 0f);
             weight = 0f;
         }
@@ -89,7 +90,7 @@ namespace Framework
 
             weight = 0f;
         }
-        
+
 
         public void SetPoint(float horizontal, float vertical)
         {
@@ -136,7 +137,7 @@ namespace Framework
                 mixer.SetInputWeight(map.State.index, map.State.weight);
             }
         }
-        
+
         public float UpdateTransitionWeight(float dt)
         {
             float otherWeight = 0f;
@@ -146,7 +147,7 @@ namespace Framework
                 weight = 1f;
                 return otherWeight;
             }
-            
+
             float oneFrameAddWeight = dt * (1f / _normalizedTransitionDuration);
             weight += oneFrameAddWeight;
             otherWeight = 1 - weight;
@@ -156,10 +157,10 @@ namespace Framework
                 weight = 1f;
                 otherWeight = 0f;
             }
-            
+
             return otherWeight;
         }
-        
+
         public bool IsTransitionFinish()
         {
             return weight >= 1f;

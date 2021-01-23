@@ -16,13 +16,13 @@ namespace Framework
         public float UpdateWeight(float dt)
         {
             float otherWeight = 0f;
-            
+
             if (MathHelper.EqualsZero(_normalizedTransitionDuration))
             {
                 _state.weight = 1f;
                 return otherWeight;
             }
-            
+
             float oneFrameAddWeight = dt * (1f / _normalizedTransitionDuration);
             _state.weight += oneFrameAddWeight;
             otherWeight = 1 - _state.weight;

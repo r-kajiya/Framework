@@ -23,7 +23,7 @@ namespace Framework
             {
                 _transitionDuration = 0.001f;
             }
-            
+
             float oneFrameAdd = dt * (1f / _transitionDuration);
             _time += oneFrameAdd;
 
@@ -38,7 +38,7 @@ namespace Framework
             return Mathf.Lerp(_origin, _destination, _time);
         }
     }
-    
+
     public struct Destination2D
     {
         Vector2 _destination;
@@ -60,7 +60,7 @@ namespace Framework
             {
                 _transitionDuration = 0.001f;
             }
-            
+
             float oneFrameAdd = dt * (1f / _transitionDuration);
             _time += oneFrameAdd;
 
@@ -75,7 +75,7 @@ namespace Framework
             return Vector2.Lerp(_origin, _destination, _time);
         }
     }
-    
+
     public struct Destination3D
     {
         Vector3 _destination;
@@ -97,7 +97,7 @@ namespace Framework
             {
                 _transitionDuration = 0.001f;
             }
-            
+
             float oneFrameAdd = dt * (1f / _transitionDuration);
             _time += oneFrameAdd;
 
@@ -112,7 +112,7 @@ namespace Framework
             return Vector3.Lerp(_origin, _destination, _time);
         }
     }
-    
+
     public struct Destination4D
     {
         Vector4 _destination;
@@ -134,7 +134,7 @@ namespace Framework
             {
                 _transitionDuration = 0.001f;
             }
-            
+
             float oneFrameAdd = dt * (1f / _transitionDuration);
             _time += oneFrameAdd;
 

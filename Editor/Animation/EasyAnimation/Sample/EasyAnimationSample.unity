@@ -3364,7 +3364,7 @@ MonoBehaviour:
   normalizedTransitionDuration: 0.3
   _horizontalText: {fileID: 1383209241}
   _verticalText: {fileID: 2101720526}
-  _blendValue: 1
+  _blendValue: 0.1
 --- !u!1 &1056772746
 GameObject:
   m_ObjectHideFlags: 0

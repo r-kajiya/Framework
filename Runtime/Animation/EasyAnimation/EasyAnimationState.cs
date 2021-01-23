@@ -10,7 +10,7 @@ namespace Framework
         readonly string _stateName;
         readonly AnimationClip _clip;
         readonly WrapMode _wrapMode;
-        
+
         public Playable Playable => _playable;
         public string StateName => _stateName;
         public AnimationClip Clip => _clip;
@@ -18,7 +18,7 @@ namespace Framework
 
         public float weight;
         public int index;
-        
+
         public EasyAnimationState(AnimationClip clip, string stateName, PlayableGraph graph)
         {
             _stateName = stateName;
@@ -29,6 +29,7 @@ namespace Framework
             {
                 _playable.SetDuration(clip.length);
             }
+
             _clip = clip;
             _wrapMode = clip.wrapMode;
         }
@@ -63,18 +64,18 @@ namespace Framework
         public void SetTime(float time)
         {
             _playable.SetTime(time);
-            
+
             if (time >= _playable.GetDuration())
             {
                 Stop();
             }
         }
-        
+
         public float GetSpeed()
         {
-            return (float)_playable.GetSpeed();
+            return (float) _playable.GetSpeed();
         }
-        
+
         public void SetSpeed(float speed)
         {
             _playable.SetSpeed(speed);

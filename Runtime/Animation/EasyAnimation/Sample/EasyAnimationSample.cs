@@ -152,12 +152,12 @@ namespace Framework
         
         public void OnTS05xButton()
         {
-            Time.timeScale = 0.1f;
+            Time.timeScale = 0.5f;
         }
         
         public void OnTS01xButton()
         {
-            Time.timeScale = 0.01f;
+            Time.timeScale = 0.1f;
         }
     }
 }
