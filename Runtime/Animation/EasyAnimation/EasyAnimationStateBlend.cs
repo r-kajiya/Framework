@@ -79,6 +79,19 @@ namespace Framework
             return false;
         }
 
+        public void SetSpeed(float speed)
+        {
+            foreach (var map in _maps)
+            {
+                map.State.SetSpeed(speed);
+            }
+        }
+
+        public float GetSpeed()
+        {
+            return _maps[0].State.GetSpeed();
+        }
+
         public void Stop(AnimationMixerPlayable mixer)
         {
             foreach (var map in _maps)

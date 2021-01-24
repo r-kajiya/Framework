@@ -52,13 +52,8 @@ namespace Framework
 
             return true;
         }
-
-        public bool Remove(string stateName)
-        {
-            return _stateManager.Remove(stateName);
-        }
-
-        public bool AddBlend(EasyBlendTree blendTree)
+        
+        public bool Add(EasyBlendTree blendTree)
         {
             int startIndex = _stateManager.AllCount();
 
@@ -70,8 +65,13 @@ namespace Framework
             return true;
         }
 
-        public bool RemoveBlend(string stateName)
+        public bool Remove(string stateName)
         {
+            if (_stateManager.Remove(stateName))
+            {
+                return true;
+            }
+
             return _stateManager.RemoveBlend(stateName);
         }
 
@@ -164,6 +164,8 @@ namespace Framework
                 return false;
             }
 
+            _stateManager.crossFadeTarget = null;
+
             target.Play(normalizedTransitionDuration, pointTransitionDuration);
             _stateManager.targetBlend = target;
 
@@ -210,12 +212,22 @@ namespace Framework
         public bool IsPlaying(string stateName)
         {
             var state = _stateManager.Find(stateName);
-            if (state == null)
+            if (state != null)
+            {
+                return state.IsPlaying();
+            }
+
+            if (_stateManager.targetBlend == null)
             {
                 return false;
             }
 
-            return state.IsPlaying();
+            if (_stateManager.targetBlend.IsPlaying())
+            {
+                return true;
+            }
+
+            return false;
         }
 
         public bool IsPlaying(int stateIndex)
@@ -249,6 +261,11 @@ namespace Framework
             foreach (var state in _stateManager.states)
             {
                 state.SetSpeed(speed);
+            }
+
+            foreach (var blend in _stateManager.blends)
+            {
+                blend.SetSpeed(speed);
             }
         }
 
@@ -362,6 +379,11 @@ namespace Framework
 
         void UpdateBlend(float dt)
         {
+            if (_stateManager.crossFadeTarget != null)
+            {
+                return;
+            }
+            
             if (_stateManager.targetBlend == null)
             {
                 return;

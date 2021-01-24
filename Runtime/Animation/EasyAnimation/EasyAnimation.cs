@@ -46,7 +46,7 @@ namespace Framework
 
             foreach (var blendTree in _blendTrees)
             {
-                _playable.AddBlend(blendTree);
+                _playable.Add(blendTree);
             }
             
             foreach (var blendTree in _blendTrees)
@@ -210,6 +210,14 @@ namespace Framework
             }
 
             return output;
+        }
+        
+        void OnDestroy()
+        {
+            if (_playableGraph.IsValid())
+            {
+                Release();
+            }
         }
 
         void OnAnimatorMove()
