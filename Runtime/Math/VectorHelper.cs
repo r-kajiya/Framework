@@ -27,6 +27,13 @@ namespace Framework
             Vector3 cameraVec = cameraForward * vec.z + camera.transform.right * vec.x;
             return cameraVec;
         }
+        
+        public static Vector3 AlongCamera(Vector2 vec, Camera camera)
+        {
+            Vector3 cameraForward = Vector3.Scale(camera.transform.forward, new Vector3(1, 0, 1)).normalized;
+            Vector3 cameraVec = cameraForward * vec.y + camera.transform.right * vec.x;
+            return cameraVec;
+        }
 
         public static Vector3 RandomSphere(float range = 1f)
         {

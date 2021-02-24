@@ -24,18 +24,6 @@ namespace Framework
             _list = new List<TModel>(_map.Values);
         }
 
-        public void Save(TModel model)
-        {
-            _isDirty = true;
-            _dataStore.Save(model);
-        }
-
-        public void SaveList(List<TModel> models)
-        {
-            _isDirty = true;
-            _dataStore.SaveList(models);
-        }
-        
         public TModel Get(TPrimaryKey primaryKey)
         {
             if (_isDirty)

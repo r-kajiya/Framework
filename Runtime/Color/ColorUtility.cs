@@ -15,5 +15,13 @@ namespace Framework
         public static Color YellowHR = new Color(Color.yellow.r, Color.yellow.g, Color.yellow.b, 0.5f);
         public static Color BlackHR = new Color(Color.black.r, Color.black.g, Color.black.b, 0.5f);
         public static Color None = new Color(0f, 0f, 0f, 0f);
+        
+        public static Color HexToColor(this string self)
+        {
+            if (!UnityEngine.ColorUtility.TryParseHtmlString(self, out var color)) {
+                Debug.LogWarning("Unknown color code... " + self);
+            }
+            return color;
+        }
     }
 }

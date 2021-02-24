@@ -139,6 +139,8 @@ namespace Framework
                 DebugLog.Error($"EasyAnimationPlayable.CrossFade : アニメーションステートが存在しないため再生できませんでした。{stateName}");
                 return false;
             }
+            
+            DebugLog.Normal($"EasyAnimationPlayable.CrossFade : {stateName}を再生します。");
 
             BlendStopIfNeeded();
 
@@ -163,6 +165,8 @@ namespace Framework
                 DebugLog.Warning($"EasyAnimationPlayable.Blend : 再生中のブレンドアニメーションステートを再生しようとしたためキャンセルしました。{stateName}");
                 return false;
             }
+            
+            DebugLog.Normal($"EasyAnimationPlayable.Blend : {stateName}を再生します。");
 
             _stateManager.crossFadeTarget = null;
 
@@ -291,6 +295,19 @@ namespace Framework
                 if (state.IsPlaying())
                 {
                     return state;
+                }
+            }
+
+            return null;
+        }
+
+        public EasyAnimationStateBlend getPlayingStateBlend()
+        {
+            foreach (var blend in _stateManager.blends)
+            {
+                if (blend.IsPlaying())
+                {
+                    return blend;
                 }
             }
 
@@ -450,7 +467,11 @@ namespace Framework
 
         void BlendStopIfNeeded()
         {
-            _stateManager.targetBlend = null;
+            if (_stateManager.targetBlend != null)
+            {
+                _stateManager.targetBlend.Stop(_mixer);
+                _stateManager.targetBlend = null;
+            }
         }
     }
 }

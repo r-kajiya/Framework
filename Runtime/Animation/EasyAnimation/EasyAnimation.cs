@@ -173,6 +173,11 @@ namespace Framework
         {
             return _playable.GetPlayingState();
         }
+        
+        public EasyAnimationStateBlend GetCurrentStateBlend()
+        {
+            return _playable.getPlayingStateBlend();
+        }
 
         public void Stop()
         {

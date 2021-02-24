@@ -13,7 +13,6 @@ namespace FrameworkEditor
         const string ITEM_NAME = "Framework/マスターデータ定義生成";
         const string WINDOW_TITLE = "MasterDataCode Generate Window";
         
-        
         TextAsset _textAsset;
         string _namespace;
         string _path;
@@ -24,7 +23,12 @@ namespace FrameworkEditor
         string _primaryKeyName;
         string _repositoryName;
         Dictionary<string, string> _keyTypeMap = new Dictionary<string, string>();
-        
+        bool _isGenerateModel = true;
+        bool _isGenerateEntity = true;
+        bool _isGenerateDataStore = true;
+        bool _isGeneratePrimaryKey = true;
+        bool _isGenerateRepository = true;
+
         [MenuItem(ITEM_NAME)]
         static void Open()
         {
@@ -37,9 +41,13 @@ namespace FrameworkEditor
             _textAsset = (TextAsset) EditorGUILayout.ObjectField ("スキーマ定義json", _textAsset, typeof(TextAsset), false);
             EditorGUILayout.EndHorizontal();
             _path = AssetDatabase.GetAssetPath (_textAsset);
-
             _namespace = EditorGUILayout.TextField("namespace", _namespace);
-            
+            _isGenerateModel = EditorGUILayout.Toggle("Generate Model", _isGenerateModel);
+            _isGenerateEntity = EditorGUILayout.Toggle("Generate Entity", _isGenerateEntity);
+            _isGenerateDataStore = EditorGUILayout.Toggle("Generate DataStore", _isGenerateDataStore);
+            _isGeneratePrimaryKey = EditorGUILayout.Toggle("Generate PrimaryKey", _isGeneratePrimaryKey);
+            _isGenerateRepository = EditorGUILayout.Toggle("Generate Repository", _isGenerateRepository);
+
             if (GUILayout.Button("コード生成"))
             {
                 if (Validate())
@@ -111,11 +119,31 @@ namespace FrameworkEditor
 
             reader.Close();
 
-            GenerateEntity();
-            GenerateModel();
-            GeneratePrimaryKey();
-            GenerateDataStore();
-            GenerateRepository();
+            
+            if (_isGenerateModel)
+            {
+                GenerateModel();
+            }
+
+            if (_isGenerateEntity)
+            {
+                GenerateEntity();
+            }
+
+            if (_isGeneratePrimaryKey)
+            {
+                GeneratePrimaryKey();   
+            }
+
+            if (_isGenerateDataStore)
+            {
+                GenerateDataStore();
+            }
+
+            if (_isGenerateRepository)
+            {
+                GenerateRepository();   
+            }
         }
 
         void GenerateEntity()
@@ -137,17 +165,22 @@ namespace FrameworkEditor
                 if (pair.Value.Contains("int"))
                 {
                     stringBuilder.Append("        int ").Append(pair.Key).AppendLine(" = -1;");
-                    stringBuilder.Append("        public int ").Append(pair.Key.ToTitleUpperCase()).Append("=> ").Append(pair.Key).AppendLine(";");
+                    stringBuilder.Append("        public int ").Append(pair.Key.ToTitleUpperCase()).Append(" => ").Append(pair.Key).AppendLine(";");
                 }
                 else if (pair.Value.Contains("float"))
                 {
                     stringBuilder.Append("        float ").Append(pair.Key).AppendLine(" = -1.0f;");
-                    stringBuilder.Append("        public float ").Append(pair.Key.ToTitleUpperCase()).Append("=> ").Append(pair.Key).AppendLine(";");
+                    stringBuilder.Append("        public float ").Append(pair.Key.ToTitleUpperCase()).Append(" => ").Append(pair.Key).AppendLine(";");
                 }
                 else if (pair.Value.Contains("string"))
                 {
                     stringBuilder.Append("        string ").Append(pair.Key).AppendLine(" = \"\";");
-                    stringBuilder.Append("        public string ").Append(pair.Key.ToTitleUpperCase()).Append("=> ").Append(pair.Key).AppendLine(";");
+                    stringBuilder.Append("        public string ").Append(pair.Key.ToTitleUpperCase()).Append(" => ").Append(pair.Key).AppendLine(";");
+                }
+                else
+                {
+                    stringBuilder.Append("        " + pair.Value + " ").Append(pair.Key).AppendLine(";");
+                    stringBuilder.Append("        public " + pair.Value + " ").Append(pair.Key.ToTitleUpperCase()).Append(" => ").Append(pair.Key).AppendLine(";");
                 }
 
                 stringBuilder.AppendLine();
@@ -247,7 +280,7 @@ namespace FrameworkEditor
             stringBuilder.AppendLine("                return true;");
             stringBuilder.AppendLine("            }");
             stringBuilder.AppendLine("            // TODO: 比較式を記入してください");
-            stringBuilder.AppendLine("            return true;");
+            stringBuilder.AppendLine("            return false;");
             stringBuilder.AppendLine("        }");
             stringBuilder.AppendLine();
             stringBuilder.AppendLine("        public override bool Equals(object obj)");
@@ -270,7 +303,7 @@ namespace FrameworkEditor
             stringBuilder.AppendLine();
             stringBuilder.AppendLine("        public override int GetHashCode()");
             stringBuilder.AppendLine("        {");
-            stringBuilder.AppendLine("            return _model != null ? _model.GetHashCode() : 0;");
+            stringBuilder.AppendLine("            return 1");
             stringBuilder.AppendLine("        }");
             stringBuilder.AppendLine("    }");
             stringBuilder.AppendLine("}");
@@ -304,9 +337,6 @@ namespace FrameworkEditor
             stringBuilder.AppendLine("        {");
             stringBuilder.Append("            public ").Append(_entityName).AppendLine("[] Values = null;");
             stringBuilder.AppendLine("        }");
-            stringBuilder.AppendLine();
-            stringBuilder.Append("        public void Save(").Append(_modelName).AppendLine(" model) { }");
-            stringBuilder.Append("        public void SaveList(List<").Append(_modelName).AppendLine("> models) { }");
             stringBuilder.AppendLine();
             stringBuilder.Append("       public Dictionary<").Append(_primaryKeyName).Append(", ").Append(_modelName).AppendLine("> Load()");
             stringBuilder.AppendLine("        {");

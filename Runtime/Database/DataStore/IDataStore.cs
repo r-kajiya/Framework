@@ -7,7 +7,5 @@ namespace Framework
         where TPrimaryKey : IPrimaryKey<TPrimaryKey, TModel>
     {
         Dictionary<TPrimaryKey, TModel> Load();
-        void Save(TModel model);
-        void SaveList(List<TModel> models);
     }
 }
