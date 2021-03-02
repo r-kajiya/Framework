@@ -8,6 +8,9 @@ namespace Framework
     public class EasyAnimation : MonoBehaviour
     {
         [SerializeField]
+        bool _playAutomaticallyOnAwake = false;
+        
+        [SerializeField]
         bool _playAutomaticallyOnInitialize = false;
         
         [SerializeField]
@@ -22,14 +25,30 @@ namespace Framework
         float _speedTemp;
         Vector3 _rootAnimationDeltaPosition;
         Quaternion _rootAnimationDeltaRotation;
+        bool _isInitialized;
 
         public Animator Animator => _animator;
         public List<AnimationClip> AnimationClips => _animationClips;
         public Vector3 RootAnimationDeltaPosition => _rootAnimationDeltaPosition;
         public Quaternion RootAnimationDeltaRotation => _rootAnimationDeltaRotation;
 
+        void Awake()
+        {
+            if (_playAutomaticallyOnAwake)
+            {
+                Initialize();
+            }
+        }
+
         public void Initialize()
         {
+            if (_isInitialized)
+            {
+                DebugLog.Warning("EasyAnimation:Initialize:初期化済みです。");
+                return;
+            }
+            
+            _isInitialized = true;
             _animator = GetComponent<Animator>();
 
             _playableGraph = PlayableGraph.Create();
@@ -85,12 +104,12 @@ namespace Framework
             return _playable.Remove(stateName);
         }
         
-        public bool Play(int stateIndex, float time)
+        public bool Play(int stateIndex, float time = 0f)
         {
             return _playable.Play(stateIndex, time);
         }
 
-        public bool Play(string stateName, float time)
+        public bool Play(string stateName, float time = 0f)
         {
             return _playable.Play(stateName, time);
         }
@@ -119,12 +138,12 @@ namespace Framework
             return _playable.Play(stateName, time);
         }
         
-        public bool CrossFade(int stateIndex, float time, float normalizedTransitionDuration)
+        public bool CrossFade(int stateIndex, float time = 0f, float normalizedTransitionDuration = 0.3f)
         {
             return _playable.CrossFade(stateIndex, time, normalizedTransitionDuration);
         }
 
-        public bool CrossFade(string stateName, float time, float normalizedTransitionDuration)
+        public bool CrossFade(string stateName, float time = 0, float normalizedTransitionDuration = 0.3f)
         {
             return _playable.CrossFade(stateName, time, normalizedTransitionDuration);
         }

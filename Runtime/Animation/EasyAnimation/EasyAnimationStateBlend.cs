@@ -8,7 +8,7 @@ namespace Framework
 {
     public class EasyAnimationStateBlend
     {
-        class Map
+        public class Map
         {
             readonly EasyAnimationState _state;
             readonly EasyBlendMotion _blend;
@@ -23,6 +23,7 @@ namespace Framework
         }
 
         readonly List<Map> _maps = new List<Map>();
+        public List<Map> Maps => _maps;
         float _pointTransitionDuration = 0.3f;
         float _normalizedTransitionDuration = 0.3f;
         public float NormalizedTransitionDuration => _normalizedTransitionDuration;
@@ -103,12 +104,19 @@ namespace Framework
 
             weight = 0f;
         }
-
-
+        
         public void SetPoint(float horizontal, float vertical)
         {
             var destination = new Vector2(horizontal, vertical);
             _destinationPoint.Start(_destinationPoint.Current(), destination, _pointTransitionDuration);
+        }
+
+        public void SetAllWeight(AnimationMixerPlayable mixer, float weight)
+        {
+            foreach (var map in _maps)
+            {
+                mixer.SetInputWeight(map.State.index, weight);
+            }
         }
 
         public void UpdateWeight(AnimationMixerPlayable mixer, float dt)
