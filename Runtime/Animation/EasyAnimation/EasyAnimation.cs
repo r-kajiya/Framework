@@ -121,6 +121,11 @@ namespace Framework
         {
             return _playable.Blend(blendTreeName, transitionTime);
         }
+
+        public bool IsBlending(string blendTreeName)
+        {
+            return _playable.IsBlending(blendTreeName);
+        }
         
         public bool SetBlendParameter(string blendTreeName, float horizontal, float vertical)
         {

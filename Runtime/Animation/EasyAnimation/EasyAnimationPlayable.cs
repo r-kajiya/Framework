@@ -191,6 +191,11 @@ namespace Framework
 
             return false;
         }
+        
+        public bool IsBlending(string blendTreeName)
+        {
+            return _blendingName == blendTreeName;
+        }
 
         public bool IsPlaying(int stateIndex)
         {
