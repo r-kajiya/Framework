@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.Animations;
 using UnityEngine.Playables;
 
@@ -9,10 +10,6 @@ namespace Framework
         public List<EasyAnimationState> states = new List<EasyAnimationState>();
 
         public List<EasyAnimationStateBlend> blends = new List<EasyAnimationStateBlend>();
-
-        public EasyAnimationStateCrossFade crossFadeTarget;
-
-        public EasyAnimationStateBlend targetBlend;
 
         public EasyAnimationState Find(string stateName)
         {
@@ -34,26 +31,39 @@ namespace Framework
             return states.Exists(x => x.StateName == stateName);
         }
 
-        public bool Add(EasyAnimationState addState)
+        public bool Add(AnimationClip clip, string stateName, PlayableGraph graph, AnimationMixerPlayable mixer)
         {
-            var findState = Find(addState.StateName);
+            var findState = Find(stateName);
             if (findState == null)
             {
+                var addState = new EasyAnimationState(clip, stateName, graph);
                 states.Add(addState);
-                DebugLog.Normal($"EasyAnimationStateManager.Add : アニメーションステートを追加しました。{addState}");
+                addState.Stop();
+                addState.index = states.Count - 1;
+                int inputCount = addState.index + 1;
+                mixer.SetInputCount(inputCount);
+                graph.Connect(addState.Playable, 0, mixer, addState.index);
+                DebugLog.Normal($"EasyAnimationStateManager.Add : アニメーションステートを追加しました。{clip.name}");
                 return true;
             }
-
-            DebugLog.Warning($"EasyAnimationStateManager.Add : 同名アニメーションステートが存在しているため、追加に失敗しました。{addState}");
+            
+            DebugLog.Warning($"EasyAnimationStateManager.Add : 同名アニメーションステートが存在しているため、追加に失敗しました。{clip.name}");
             return false;
         }
 
-        public bool AddBlend(EasyBlendTree tree, PlayableGraph graph, AnimationMixerPlayable mixer, int stateIndex)
+        public bool AddBlend(EasyBlendTree tree, PlayableGraph graph, AnimationMixerPlayable mixer)
         {
-            var findState = FindBlend(tree.name);
-            if (findState == null)
+            var findBlend = FindBlend(tree.name);
+            if (findBlend == null)
             {
-                blends.Add(new EasyAnimationStateBlend(tree, graph, mixer, stateIndex));
+                for (int i = 0; i < tree.BlendMotions.Count; i++)
+                {
+                    var clip = tree.BlendMotions[i].Motion as AnimationClip;
+                    string animationName = tree.name + "_" + clip.name + "_" + i;
+                    Add(clip, animationName, graph, mixer);
+                }
+
+                blends.Add(new EasyAnimationStateBlend(this, tree, graph, mixer));
                 DebugLog.Normal($"EasyAnimationStateManager.AddBlend : ブレンドアニメーションステートを追加しました。{tree.name}");
                 return true;
             }
@@ -69,7 +79,6 @@ namespace Framework
             {
                 findState.Destroy();
                 states.Remove(findState);
-                DebugLog.Normal($"EasyAnimationStateManager.Remove : アニメーションステートを削除しました。{removeStateName}");
                 return true;
             }
 
@@ -87,26 +96,8 @@ namespace Framework
                 return true;
             }
 
-            DebugLog.Warning(
-                $"EasyAnimationStateManager.RemoveBlend : ブレンドアニメーションステートが存在していないため、追加に失敗しました。{removeStateName}");
+            DebugLog.Warning($"EasyAnimationStateManager.RemoveBlend : ブレンドアニメーションステートが存在していないため、追加に失敗しました。{removeStateName}");
             return false;
-        }
-
-        public int Count()
-        {
-            return states.Count;
-        }
-
-        public int AllCount()
-        {
-            int count = states.Count;
-
-            foreach (var blend in blends)
-            {
-                count += blend.MotionCount;
-            }
-
-            return count;
         }
     }
 }

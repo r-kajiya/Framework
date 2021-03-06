@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Playables;
@@ -10,6 +11,8 @@ namespace Framework
         Playable _self;
         AnimationMixerPlayable _mixer;
         PlayableGraph _graph;
+        float _transitionTime = 0.3f;
+        string _blendingName;
         readonly EasyAnimationStateManager _stateManager;
 
         public Playable Self => _self;
@@ -32,37 +35,17 @@ namespace Framework
 
         public override void PrepareFrame(Playable owner, FrameData data)
         {
-            UpdateCrossFade(data.deltaTime);
-            UpdateBlend(data.deltaTime);
+            UpdateTransition(data.deltaTime);
         }
 
         public bool Add(AnimationClip clip, string stateName)
         {
-            EasyAnimationState newState = new EasyAnimationState(clip, stateName, _graph);
-            if (!_stateManager.Add(newState))
-            {
-                return false;
-            }
-
-            newState.Stop();
-            newState.index = _stateManager.AllCount() - 1;
-            int inputCount = newState.index + 1;
-            _mixer.SetInputCount(inputCount);
-            _graph.Connect(newState.Playable, 0, _mixer, newState.index);
-
-            return true;
+            return _stateManager.Add(clip, stateName, _graph, _mixer);
         }
         
         public bool Add(EasyBlendTree blendTree)
         {
-            int startIndex = _stateManager.AllCount();
-
-            if (!_stateManager.AddBlend(blendTree, _graph, _mixer, startIndex))
-            {
-                return false;
-            }
-
-            return true;
+            return _stateManager.AddBlend(blendTree, _graph, _mixer);
         }
 
         public bool Remove(string stateName)
@@ -75,19 +58,19 @@ namespace Framework
             return _stateManager.RemoveBlend(stateName);
         }
 
-        public bool Play(int stateIndex, float time)
+        public bool Play(int index, float time = 0.0f, float transitionTime = 0.3f)
         {
-            var target = _stateManager.Find(stateIndex);
+            var target = _stateManager.Find(index);
             if (target == null)
             {
-                DebugLog.Error($"EasyAnimationPlayable.Play : アニメーションステートが存在しないため再生できませんでした。{stateIndex}");
+                DebugLog.Error($"EasyAnimationPlayable.Play : アニメーションステートが存在しないため再生できませんでした。{index}");
                 return false;
             }
 
-            return Play(target.StateName, time);
+            return Play(target.StateName, time, transitionTime);
         }
 
-        public bool Play(string stateName, float time)
+        public bool Play(string stateName, float time = 0.0f, float transitionTime = 0.3f)
         {
             if (!_stateManager.Exists(stateName))
             {
@@ -95,22 +78,23 @@ namespace Framework
                 return false;
             }
 
-            BlendStopIfNeeded();
+            _blendingName = string.Empty;
+            _transitionTime = transitionTime;
 
             foreach (var state in _stateManager.states)
             {
+                state.originWeight = state.weight;
+                
                 if (state.StateName == stateName)
                 {
+                    state.destinationWeight = 1f;
                     state.SetTime(time);
-                    state.weight = 1;
                     state.Play();
-                    _mixer.SetInputWeight(state.index, state.weight);
                 }
                 else
                 {
-                    state.weight = 0;
-                    state.Stop();
-                    _mixer.SetInputWeight(state.index, state.weight);
+                    state.destinationWeight = 0f;
+                    state.isBlending = false;
                 }
             }
 
@@ -119,71 +103,55 @@ namespace Framework
             return true;
         }
 
-        public bool CrossFade(int stateIndex, float time, float normalizedTransitionDuration)
+        public bool Blend(string blendTreeName, float transitionTime = 0.3f)
         {
-            var target = _stateManager.Find(stateIndex);
+            var target = _stateManager.FindBlend(blendTreeName);
             if (target == null)
             {
-                DebugLog.Error($"EasyAnimationPlayable.CrossFade : アニメーションステートが存在しないため再生できませんでした。{stateIndex}");
-                return false;
-            }
-
-            return CrossFade(target.StateName, time, normalizedTransitionDuration);
-        }
-
-        public bool CrossFade(string stateName, float time, float normalizedTransitionDuration)
-        {
-            var target = _stateManager.Find(stateName);
-            if (target == null)
-            {
-                DebugLog.Error($"EasyAnimationPlayable.CrossFade : アニメーションステートが存在しないため再生できませんでした。{stateName}");
+                DebugLog.Error($"EasyAnimationPlayable.Blend : ブレンドアニメーションステートが存在しないため再生できませんでした。{blendTreeName}");
                 return false;
             }
             
-            DebugLog.Normal($"EasyAnimationPlayable.CrossFade : {stateName}を再生します。");
+            _blendingName = blendTreeName;
+            _transitionTime = transitionTime;
 
-            BlendStopIfNeeded();
+            foreach (var state in _stateManager.states)
+            {
+                state.destinationWeight = 0f;
+                state.originWeight = state.weight;
+                state.isBlending = false;
+            }
 
-            target.SetTime(time);
             target.Play();
-            _stateManager.crossFadeTarget = new EasyAnimationStateCrossFade(target, normalizedTransitionDuration);
+            target.ComputeDestinationWeights(0f, 0f);
+
+            DebugLog.Normal($"EasyAnimationPlayable.Blend : {blendTreeName}を再生します。");
 
             return true;
         }
 
-        public bool Blend(string stateName, float normalizedTransitionDuration, float pointTransitionDuration)
+        public bool SetBlendParameter(string blendTreeName, float horizontal, float vertical)
         {
-            var target = _stateManager.FindBlend(stateName);
-            if (target == null)
+            if (_blendingName != blendTreeName)
             {
-                DebugLog.Error($"EasyAnimationPlayable.Blend : ブレンドアニメーションステートが存在しないため再生できませんでした。{stateName}");
-                return false;
-            }
-
-            if (_stateManager.targetBlend?.StateName == target.StateName)
-            {
-                DebugLog.Warning($"EasyAnimationPlayable.Blend : 再生中のブレンドアニメーションステートを再生しようとしたためキャンセルしました。{stateName}");
+                DebugLog.Warning($"EasyAnimationPlayable.SetBlendParameter : ブレンドアニメーション中じゃありません。{blendTreeName}");
                 return false;
             }
             
-            DebugLog.Normal($"EasyAnimationPlayable.Blend : {stateName}を再生します。");
-
-            _stateManager.crossFadeTarget = null;
-
-            target.Play(normalizedTransitionDuration, pointTransitionDuration);
-            _stateManager.targetBlend = target;
-
-            return true;
-        }
-
-        public bool SetBlendParameter(float horizontal, float vertical)
-        {
-            if (_stateManager.targetBlend == null)
+            var blend = _stateManager.FindBlend(blendTreeName);
+            
+            if (blend == null)
             {
+                DebugLog.Warning($"EasyAnimationPlayable.SetBlendParameter : 存在しないブレンドアニメーションです。{blendTreeName}");
                 return false;
             }
-
-            _stateManager.targetBlend.SetPoint(horizontal, vertical);
+            
+            blend.ComputeDestinationWeights(horizontal, vertical);
+            
+            foreach (var state in _stateManager.states)
+            {
+                state.originWeight = state.weight;
+            }
 
             return true;
         }
@@ -221,16 +189,6 @@ namespace Framework
                 return state.IsPlaying();
             }
 
-            if (_stateManager.targetBlend == null)
-            {
-                return false;
-            }
-
-            if (_stateManager.targetBlend.IsPlaying())
-            {
-                return true;
-            }
-
             return false;
         }
 
@@ -260,16 +218,11 @@ namespace Framework
 
         public void SetSpeed(float speed)
         {
-            // DebugLog.Normal($"EasyAnimationPlayable.SetSpeed : 再生速度を{speed}にします");
+            DebugLog.Normal($"EasyAnimationPlayable.SetSpeed : 再生速度を{speed}にします");
 
             foreach (var state in _stateManager.states)
             {
                 state.SetSpeed(speed);
-            }
-
-            foreach (var blend in _stateManager.blends)
-            {
-                blend.SetSpeed(speed);
             }
         }
 
@@ -286,6 +239,8 @@ namespace Framework
             {
                 state.Stop();
             }
+
+            _blendingName = string.Empty;
         }
 
         public EasyAnimationState GetPlayingState()
@@ -295,19 +250,6 @@ namespace Framework
                 if (state.IsPlaying())
                 {
                     return state;
-                }
-            }
-
-            return null;
-        }
-
-        public EasyAnimationStateBlend getPlayingStateBlend()
-        {
-            foreach (var blend in _stateManager.blends)
-            {
-                if (blend.IsPlaying())
-                {
-                    return blend;
                 }
             }
 
@@ -334,143 +276,59 @@ namespace Framework
             return _stateManager.states;
         }
 
-        void UpdateCrossFade(float dt)
+        void UpdateTransition(float dt)
         {
-            if (_stateManager.crossFadeTarget == null)
+            if (_transitionTime.EqualsZero())
             {
-                return;
+                _transitionTime = 0.001f;
             }
 
-            var target = _stateManager.crossFadeTarget.State;
-            float otherWeight = _stateManager.crossFadeTarget.UpdateWeight(dt);
-            _mixer.SetInputWeight(target.index, target.weight);
-
-            if (_stateManager.crossFadeTarget.IsFinish())
+            if (dt.EqualsZero())
             {
-                foreach (var state in _stateManager.states)
-                {
-                    if (state.index == target.index)
-                    {
-                        continue;
-                    }
-
-                    state.Stop();
-                    _mixer.SetInputWeight(state.index, 0);
-                }
-
-                foreach (var blend in _stateManager.blends)
-                {
-                    blend.Stop(_mixer);
-                }
-
-                _stateManager.crossFadeTarget = null;
-            }
-
-            foreach (var state in _stateManager.states)
-            {
-                if (state.index == target.index)
-                {
-                    continue;
-                }
-
-                if (state.weight.EqualsZero())
-                {
-                    state.Stop();
-                    _mixer.SetInputWeight(state.index, 0);
-                    continue;
-                }
-
-                state.weight = otherWeight;
-                _mixer.SetInputWeight(state.index, state.weight);
-            }
-
-            foreach (var blend in _stateManager.blends)
-            {
-                if (!blend.weight.EqualsZero())
-                {
-                    blend.weight = otherWeight;
-                    blend.UpdateWeight(_mixer, dt);
-                }
-            }
-        }
-
-        void UpdateBlend(float dt)
-        {
-            if (_stateManager.crossFadeTarget != null)
-            {
-                return;
+                dt = 0.0333f;
             }
             
-            if (_stateManager.targetBlend == null)
+            foreach (var state in _stateManager.states)
             {
-                return;
-            }
-
-            _stateManager.targetBlend.UpdateWeight(_mixer, dt);
-
-            if (!_stateManager.targetBlend.IsTransitionFinish())
-            {
-                float otherWeight = _stateManager.targetBlend.UpdateTransitionWeight(dt);
-
-                foreach (var state in _stateManager.states)
+                float defaultFrameAddWeight = dt * (1f / _transitionTime);
+                float diff = state.destinationWeight - state.weight;
+                float frameAddWeight = 0f;
+                
+                if (!diff.EqualsZero())
                 {
-                    if (state.weight.EqualsZero())
+                    frameAddWeight = defaultFrameAddWeight / diff;
+                }
+
+                float previousWeight = state.weight;
+                state.weight += frameAddWeight;
+
+                if (state.isBlending)
+                {
+                    int a = Math.Sign(previousWeight - state.destinationWeight);
+                    int b = Math.Sign(state.weight - state.destinationWeight);
+
+                    if (a != 0 && b != 0)
                     {
+                        if (a != b)
+                        {
+                            state.weight = state.destinationWeight;
+                        }   
+                    }
+                }
+                else
+                {
+                    if (state.weight >= 1f)
+                    {
+                        state.weight = 1f;
+                    }
+                    else if (state.weight <= 0f)
+                    {
+                        state.weight = 0f;
                         state.Stop();
-                        _mixer.SetInputWeight(state.index, 0);
-                        continue;
-                    }
-
-                    state.weight = otherWeight;
-                    _mixer.SetInputWeight(state.index, state.weight);
-                }
-
-                foreach (var blend in _stateManager.blends)
-                {
-                    if (blend.StateName == _stateManager.targetBlend.StateName)
-                    {
-                        continue;
-                    }
-
-                    if (!blend.weight.EqualsZero())
-                    {
-                        blend.UpdateWeight(_mixer, dt);
                     }
                 }
 
-                if (_stateManager.targetBlend.IsTransitionFinish())
-                {
-                    foreach (var state in _stateManager.states)
-                    {
-                        if (state.IsPlaying())
-                        {
-                            state.Stop();
-                            _mixer.SetInputWeight(state.index, 0);
-                        }
-                    }
-
-                    foreach (var blend in _stateManager.blends)
-                    {
-                        if (blend.StateName == _stateManager.targetBlend.StateName)
-                        {
-                            continue;
-                        }
-
-                        if (blend.IsPlaying())
-                        {
-                            blend.Stop(_mixer);
-                        }
-                    }
-                }
-            }
-        }
-
-        void BlendStopIfNeeded()
-        {
-            if (_stateManager.targetBlend != null)
-            {
-                _stateManager.targetBlend.Stop(_mixer);
-                _stateManager.targetBlend = null;
+                _mixer.SetInputWeight(state.index, state.weight);
             }
         }
     }

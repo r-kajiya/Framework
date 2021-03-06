@@ -85,13 +85,16 @@ namespace Framework
 
             if (_playAutomaticallyOnInitialize)
             {
-                _playable.Play(0, 0);   
+                _playable.Play(0);   
             }
         }
 
         public void Release()
         {
-            _playableGraph.Destroy();
+            if (_playableGraph.IsValid())
+            {
+                _playableGraph.Destroy();   
+            }
         }
 
         public bool Add(AnimationClip clip, string stateName)
@@ -104,58 +107,24 @@ namespace Framework
             return _playable.Remove(stateName);
         }
         
-        public bool Play(int stateIndex, float time = 0f)
+        public bool Play(int stateIndex, float time = 0f, float transitionTime = 0.3f)
         {
-            return _playable.Play(stateIndex, time);
+            return _playable.Play(stateIndex, time, transitionTime);
         }
 
-        public bool Play(string stateName, float time = 0f)
+        public bool Play(string stateName, float time = 0f, float transitionTime = 0.3f)
         {
-            return _playable.Play(stateName, time);
-        }
-        
-        public bool PlayNormalizeTime(int stateIndex, float normalizeTime)
-        {
-            var state = _playable.GetState(stateIndex);
-            if (state == null)
-            {
-                return false;
-            }
-            
-            float time = state.Clip.length * normalizeTime;
-            return _playable.Play(stateIndex, time);
-        }
-        
-        public bool PlayNormalizeTime(string stateName, float normalizeTime)
-        {
-            var state = _playable.GetState(stateName);
-            if (state == null)
-            {
-                return false;
-            }
-            
-            float time = state.Clip.length * normalizeTime;
-            return _playable.Play(stateName, time);
-        }
-        
-        public bool CrossFade(int stateIndex, float time = 0f, float normalizedTransitionDuration = 0.3f)
-        {
-            return _playable.CrossFade(stateIndex, time, normalizedTransitionDuration);
+            return _playable.Play(stateName, time, transitionTime);
         }
 
-        public bool CrossFade(string stateName, float time = 0, float normalizedTransitionDuration = 0.3f)
+        public bool Blend(string blendTreeName, float transitionTime = 0.3f)
         {
-            return _playable.CrossFade(stateName, time, normalizedTransitionDuration);
-        }
-
-        public bool Blend(string blendTreeName, float normalizedTransitionDuration, float pointTransitionDuration)
-        {
-            return _playable.Blend(blendTreeName, normalizedTransitionDuration, pointTransitionDuration);
+            return _playable.Blend(blendTreeName, transitionTime);
         }
         
-        public bool SetBlendParameter(float horizontal, float vertical)
+        public bool SetBlendParameter(string blendTreeName, float horizontal, float vertical)
         {
-            return _playable.SetBlendParameter(horizontal, vertical);
+            return _playable.SetBlendParameter(blendTreeName, horizontal, vertical);
         }
         
         public bool IsPlaying(string stateName)
@@ -191,11 +160,6 @@ namespace Framework
         public EasyAnimationState GetCurrentState()
         {
             return _playable.GetPlayingState();
-        }
-        
-        public EasyAnimationStateBlend GetCurrentStateBlend()
-        {
-            return _playable.getPlayingStateBlend();
         }
 
         public void Stop()

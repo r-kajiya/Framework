@@ -29,6 +29,7 @@ namespace Framework
 
         float _horizontal;
         float _vertical;
+        static readonly string blendName = "BasicMotionsBlendTree";
         
         void Start()
         {
@@ -59,17 +60,17 @@ namespace Framework
         
         public void IdleCrossFade()
         {
-            _easyAnimation.CrossFade(0, time, normalizedTransitionDuration);
+            _easyAnimation.Play(0, time, normalizedTransitionDuration);
         }
         
         public void JumpCrossFade()
         {
-            _easyAnimation.CrossFade(1, time, normalizedTransitionDuration);
+            _easyAnimation.Play(1, time, normalizedTransitionDuration);
         }
         
         public void RunCrossFade()
         {
-            _easyAnimation.CrossFade(2, time, normalizedTransitionDuration);
+            _easyAnimation.Play(2, time, normalizedTransitionDuration);
         }
 
         public void AddClip()
@@ -114,35 +115,35 @@ namespace Framework
 
         public void Blend()
         {
-            _easyAnimation.Blend("BasicMotionsBlendTree", 0.3f, 0.3f);
+            _easyAnimation.Blend(blendName);
         }
 
         public void VerticalUp()
         {
             _vertical += _blendValue;
             _verticalText.text = _vertical.ToString();
-            _easyAnimation.SetBlendParameter(_horizontal, _vertical);
+            _easyAnimation.SetBlendParameter(blendName, _horizontal, _vertical);
         }
         
         public void VerticalDown()
         {
             _vertical -= _blendValue;
             _verticalText.text = _vertical.ToString();
-            _easyAnimation.SetBlendParameter(_horizontal, _vertical);
+            _easyAnimation.SetBlendParameter(blendName, _horizontal, _vertical);
         }
         
         public void HorizontalUp()
         {
             _horizontal += _blendValue;
             _horizontalText.text = _horizontal.ToString();
-            _easyAnimation.SetBlendParameter(_horizontal, _vertical);
+            _easyAnimation.SetBlendParameter(blendName, _horizontal, _vertical);
         }
         
         public void HorizontalDown()
         {
             _horizontal -= _blendValue;
             _horizontalText.text = _horizontal.ToString();
-            _easyAnimation.SetBlendParameter(_horizontal, _vertical);
+            _easyAnimation.SetBlendParameter(blendName, _horizontal, _vertical);
         }
 
         public void OnTS1xButton()

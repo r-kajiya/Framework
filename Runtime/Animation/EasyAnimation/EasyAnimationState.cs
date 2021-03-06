@@ -18,6 +18,9 @@ namespace Framework
 
         public float weight;
         public int index;
+        public float destinationWeight;
+        public float originWeight;
+        public bool isBlending;
 
         public EasyAnimationState(AnimationClip clip, string stateName, PlayableGraph graph)
         {
@@ -25,6 +28,7 @@ namespace Framework
             _playable = AnimationClipPlayable.Create(graph, clip);
             _playable.SetApplyFootIK(false);
             _playable.SetApplyPlayableIK(false);
+            
             if (!clip.isLooping || clip.wrapMode == WrapMode.Once)
             {
                 _playable.SetDuration(clip.length);
@@ -32,6 +36,8 @@ namespace Framework
 
             _clip = clip;
             _wrapMode = clip.wrapMode;
+            destinationWeight = 0f;
+            originWeight = 0f;
         }
 
         public void Play()
