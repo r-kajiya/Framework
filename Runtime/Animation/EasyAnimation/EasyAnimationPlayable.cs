@@ -292,6 +292,8 @@ namespace Framework
             {
                 dt = 0.0333f;
             }
+
+            float totalWeight = 0f;
             
             foreach (var state in _stateManager.states)
             {
@@ -333,7 +335,23 @@ namespace Framework
                     }
                 }
 
+                totalWeight += state.weight;
+
                 _mixer.SetInputWeight(state.index, state.weight);
+            }
+
+            if (totalWeight > 1.0f)
+            {
+                foreach (var state in _stateManager.states)
+                {
+                    if (state.weight.EqualsZero())
+                    {
+                        continue;
+                    }
+                    
+                    state.weight = state.weight / totalWeight;
+                    _mixer.SetInputWeight(state.index, state.weight);
+                }
             }
         }
     }
