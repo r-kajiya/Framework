@@ -55,6 +55,13 @@ namespace Framework
 
         public void Update()
         {
+            if (_nextState == _currentState)
+            {
+                _nextState = null;
+                _transitionParameter = null;
+                return;
+            }
+            
             if (_nextState != null)
             {
                 _currentState?.Exit();
