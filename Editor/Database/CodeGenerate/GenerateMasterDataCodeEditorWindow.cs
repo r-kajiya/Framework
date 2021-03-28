@@ -195,13 +195,39 @@ namespace FrameworkEditor
             stringBuilder.AppendLine("    }");
             stringBuilder.AppendLine("}");
 
+            string projectPath = Directory.GetCurrentDirectory();
             string fileName = _entityName + ".cs";
-            FileInfo info = new FileInfo(_path);
-            string path = info.DirectoryName + "/" + fileName;
+            string[] filePathList = Directory.GetFiles(projectPath, "*.cs", System.IO.SearchOption.AllDirectories);
+            string overrideFullPath = null;
+            foreach (var filepath in filePathList)
+            {
+                if (Path.GetExtension(filepath) != ".cs")
+                {
+                    continue;
+                }
 
-            FileUtil.SaveText(stringBuilder.ToString(), path);
-            
-            Debug.Log(path+"に生成しました");
+                if (Path.GetFileName(filepath) != fileName)
+                {
+                    continue;
+                }
+
+                overrideFullPath = filepath;
+
+                break;
+            }
+
+            if (overrideFullPath == null)
+            {
+                FileInfo info = new FileInfo(_path);
+                string path = info.DirectoryName + "/" + fileName;
+                FileUtil.SaveText(stringBuilder.ToString(), path);
+                Debug.Log(path + "に生成しました");
+            }
+            else
+            {
+                FileUtil.SaveText(stringBuilder.ToString(), overrideFullPath);
+                Debug.Log(overrideFullPath + "を上書きしました");
+            }
         }
 
         void GenerateModel()
@@ -244,13 +270,39 @@ namespace FrameworkEditor
             stringBuilder.AppendLine("    }");
             stringBuilder.AppendLine("}");
 
+            string projectPath = Directory.GetCurrentDirectory();
             string fileName = _modelName + ".cs";
-            FileInfo info = new FileInfo(_path);
-            string path = info.DirectoryName + "/" + fileName;
+            string[] filePathList = Directory.GetFiles(projectPath, "*.cs", System.IO.SearchOption.AllDirectories);
+            string overrideFullPath = null;
+            foreach (var filepath in filePathList)
+            {
+                if (Path.GetExtension(filepath) != ".cs")
+                {
+                    continue;
+                }
 
-            FileUtil.SaveText(stringBuilder.ToString(), path);
-            
-            Debug.Log(path+"に生成しました");
+                if (Path.GetFileName(filepath) != fileName)
+                {
+                    continue;
+                }
+
+                overrideFullPath = filepath;
+
+                break;
+            }
+
+            if (overrideFullPath == null)
+            {
+                FileInfo info = new FileInfo(_path);
+                string path = info.DirectoryName + "/" + fileName;
+                FileUtil.SaveText(stringBuilder.ToString(), path);
+                Debug.Log(path + "に生成しました");
+            }
+            else
+            {
+                FileUtil.SaveText(stringBuilder.ToString(), overrideFullPath);
+                Debug.Log(overrideFullPath + "を上書きしました");
+            }
         }
 
         void GeneratePrimaryKey()
@@ -303,18 +355,44 @@ namespace FrameworkEditor
             stringBuilder.AppendLine();
             stringBuilder.AppendLine("        public override int GetHashCode()");
             stringBuilder.AppendLine("        {");
-            stringBuilder.AppendLine("            return 1");
+            stringBuilder.AppendLine("            return 1;");
             stringBuilder.AppendLine("        }");
             stringBuilder.AppendLine("    }");
             stringBuilder.AppendLine("}");
 
+            string projectPath = Directory.GetCurrentDirectory();
             string fileName = _primaryKeyName + ".cs";
-            FileInfo info = new FileInfo(_path);
-            string path = info.DirectoryName + "/" + fileName;
+            string[] filePathList = Directory.GetFiles(projectPath, "*.cs", System.IO.SearchOption.AllDirectories);
+            string overrideFullPath = null;
+            foreach (var filepath in filePathList)
+            {
+                if (Path.GetExtension(filepath) != ".cs")
+                {
+                    continue;
+                }
 
-            FileUtil.SaveText(stringBuilder.ToString(), path);
-            
-            Debug.Log(path+"に生成しました");
+                if (Path.GetFileName(filepath) != fileName)
+                {
+                    continue;
+                }
+
+                overrideFullPath = filepath;
+
+                break;
+            }
+
+            if (overrideFullPath == null)
+            {
+                FileInfo info = new FileInfo(_path);
+                string path = info.DirectoryName + "/" + fileName;
+                FileUtil.SaveText(stringBuilder.ToString(), path);
+                Debug.Log(path + "に生成しました");
+            }
+            else
+            {
+                FileUtil.SaveText(stringBuilder.ToString(), overrideFullPath);
+                Debug.Log(overrideFullPath + "を上書きしました");
+            }
         }
         
         void GenerateDataStore()
@@ -395,13 +473,39 @@ namespace FrameworkEditor
             stringBuilder.AppendLine("    }");
             stringBuilder.AppendLine("}");
 
+            string projectPath = Directory.GetCurrentDirectory();
             string fileName = _datastoreName + ".cs";
-            FileInfo info = new FileInfo(_path);
-            string path = info.DirectoryName + "/" + fileName;
+            string[] filePathList = Directory.GetFiles(projectPath, "*.cs", System.IO.SearchOption.AllDirectories);
+            string overrideFullPath = null;
+            foreach (var filepath in filePathList)
+            {
+                if (Path.GetExtension(filepath) != ".cs")
+                {
+                    continue;
+                }
 
-            FileUtil.SaveText(stringBuilder.ToString(), path);
-            
-            Debug.Log(path+"に生成しました");
+                if (Path.GetFileName(filepath) != fileName)
+                {
+                    continue;
+                }
+
+                overrideFullPath = filepath;
+
+                break;
+            }
+
+            if (overrideFullPath == null)
+            {
+                FileInfo info = new FileInfo(_path);
+                string path = info.DirectoryName + "/" + fileName;
+                FileUtil.SaveText(stringBuilder.ToString(), path);
+                Debug.Log(path + "に生成しました");
+            }
+            else
+            {
+                FileUtil.SaveText(stringBuilder.ToString(), overrideFullPath);
+                Debug.Log(overrideFullPath + "を上書きしました");
+            }
         }
 
         void GenerateRepository()
@@ -424,13 +528,39 @@ namespace FrameworkEditor
             stringBuilder.AppendLine("    }");
             stringBuilder.AppendLine("}");
             
+            string projectPath = Directory.GetCurrentDirectory();
             string fileName = _repositoryName + ".cs";
-            FileInfo info = new FileInfo(_path);
-            string path = info.DirectoryName + "/" + fileName;
+            string[] filePathList = Directory.GetFiles(projectPath, "*.cs", System.IO.SearchOption.AllDirectories);
+            string overrideFullPath = null;
+            foreach (var filepath in filePathList)
+            {
+                if (Path.GetExtension(filepath) != ".cs")
+                {
+                    continue;
+                }
 
-            FileUtil.SaveText(stringBuilder.ToString(), path);
-            
-            Debug.Log(path+"に生成しました");
+                if (Path.GetFileName(filepath) != fileName)
+                {
+                    continue;
+                }
+
+                overrideFullPath = filepath;
+
+                break;
+            }
+
+            if (overrideFullPath == null)
+            {
+                FileInfo info = new FileInfo(_path);
+                string path = info.DirectoryName + "/" + fileName;
+                FileUtil.SaveText(stringBuilder.ToString(), path);
+                Debug.Log(path + "に生成しました");
+            }
+            else
+            {
+                FileUtil.SaveText(stringBuilder.ToString(), overrideFullPath);
+                Debug.Log(overrideFullPath + "を上書きしました");
+            }
         }
     }    
 }

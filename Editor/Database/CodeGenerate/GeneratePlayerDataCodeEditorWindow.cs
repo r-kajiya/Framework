@@ -28,7 +28,7 @@ namespace FrameworkEditor
         bool _isGenerateDataStore = true;
         bool _isGeneratePrimaryKey = true;
         bool _isGenerateRepository = true;
-        
+
         [MenuItem(ITEM_NAME)]
         static void Open()
         {
@@ -37,17 +37,16 @@ namespace FrameworkEditor
 
         void OnGUI()
         {
-            EditorGUILayout.BeginHorizontal();
-            _textAsset = (TextAsset) EditorGUILayout.ObjectField ("スキーマ定義json", _textAsset, typeof(TextAsset), false);
-            EditorGUILayout.EndHorizontal();
-            _path = AssetDatabase.GetAssetPath (_textAsset);
+            _textAsset = (TextAsset) EditorGUILayout.ObjectField("スキーマ定義json", _textAsset, typeof(TextAsset), false);
+            _path = AssetDatabase.GetAssetPath(_textAsset);
             _namespace = EditorGUILayout.TextField("namespace", _namespace);
+
             _isGenerateModel = EditorGUILayout.Toggle("Generate Model", _isGenerateModel);
             _isGenerateEntity = EditorGUILayout.Toggle("Generate Entity", _isGenerateEntity);
             _isGenerateDataStore = EditorGUILayout.Toggle("Generate DataStore", _isGenerateDataStore);
             _isGeneratePrimaryKey = EditorGUILayout.Toggle("Generate PrimaryKey", _isGeneratePrimaryKey);
             _isGenerateRepository = EditorGUILayout.Toggle("Generate Repository", _isGenerateRepository);
-            
+
             if (GUILayout.Button("コード生成"))
             {
                 if (Validate())
@@ -60,19 +59,19 @@ namespace FrameworkEditor
         bool Validate()
         {
             FileInfo info = new FileInfo(_path);
-            
+
             if (!info.Extension.Contains("json"))
             {
                 Debug.LogError("jsonファイルではありません");
                 return false;
             }
-            
+
             if (!info.Name.Contains("schema"))
             {
                 Debug.LogError("定義ファイルではありません");
                 return false;
             }
-            
+
             if (!info.Name.Contains("Player"))
             {
                 Debug.LogError("プレイヤー定義ファイルではありません");
@@ -87,11 +86,11 @@ namespace FrameworkEditor
 
             return true;
         }
-        
+
         void Execute()
         {
             _keyTypeMap.Clear();
-            
+
             FileInfo info = new FileInfo(_path);
             StreamReader reader = new StreamReader(info.OpenRead());
 
@@ -101,7 +100,7 @@ namespace FrameworkEditor
             _datastoreName = _playerDataName + "DataStore";
             _primaryKeyName = _playerDataName + "PrimaryKey";
             _repositoryName = _playerDataName + "Repository";
-            
+
             while (reader.Peek() != -1)
             {
                 string line = reader.ReadLine();
@@ -117,7 +116,7 @@ namespace FrameworkEditor
                 line = line.Replace("\"", "");
                 line = line.Replace(",", "");
                 line = line.Replace(" ", "");
-                string[] temp =  line.Split(':');
+                string[] temp = line.Split(':');
                 string key = temp[0];
                 string type = temp[1];
                 _keyTypeMap[key] = type;
@@ -137,7 +136,7 @@ namespace FrameworkEditor
 
             if (_isGeneratePrimaryKey)
             {
-                GeneratePrimaryKey();   
+                GeneratePrimaryKey();
             }
 
             if (_isGenerateDataStore)
@@ -147,7 +146,7 @@ namespace FrameworkEditor
 
             if (_isGenerateRepository)
             {
-                GenerateRepository();   
+                GenerateRepository();
             }
         }
 
@@ -170,43 +169,77 @@ namespace FrameworkEditor
                 if (pair.Value.Contains("int"))
                 {
                     stringBuilder.Append("        int ").Append(pair.Key).AppendLine(" = -1;");
-                    stringBuilder.Append("        public int ").Append(pair.Key.ToTitleUpperCase()).Append(" => ").Append(pair.Key).AppendLine(";");
+                    stringBuilder.Append("        public int ").Append(pair.Key.ToTitleUpperCase()).Append(" => ")
+                        .Append(pair.Key).AppendLine(";");
                 }
                 else if (pair.Value.Contains("float"))
                 {
                     stringBuilder.Append("        float ").Append(pair.Key).AppendLine(" = -1.0f;");
-                    stringBuilder.Append("        public float ").Append(pair.Key.ToTitleUpperCase()).Append(" => ").Append(pair.Key).AppendLine(";");
+                    stringBuilder.Append("        public float ").Append(pair.Key.ToTitleUpperCase()).Append(" => ")
+                        .Append(pair.Key).AppendLine(";");
                 }
                 else if (pair.Value.Contains("string"))
                 {
                     stringBuilder.Append("        string ").Append(pair.Key).AppendLine(" = \"\";");
-                    stringBuilder.Append("        public string ").Append(pair.Key.ToTitleUpperCase()).Append(" => ").Append(pair.Key).AppendLine(";");
+                    stringBuilder.Append("        public string ").Append(pair.Key.ToTitleUpperCase()).Append(" => ")
+                        .Append(pair.Key).AppendLine(";");
                 }
                 else
                 {
                     stringBuilder.Append("        " + pair.Value + " ").Append(pair.Key).AppendLine(";");
-                    stringBuilder.Append("        public " + pair.Value + " ").Append(pair.Key.ToTitleUpperCase()).Append(" => ").Append(pair.Key).AppendLine(";");
+                    stringBuilder.Append("        public " + pair.Value + " ").Append(pair.Key.ToTitleUpperCase())
+                        .Append(" => ").Append(pair.Key).AppendLine(";");
                 }
 
                 stringBuilder.AppendLine();
             }
-            stringBuilder.Append("        public ").Append(_entityName).Append("(").Append(_modelName).AppendLine(" model)");
+
+            stringBuilder.Append("        public ").Append(_entityName).Append("(").Append(_modelName)
+                .AppendLine(" model)");
             stringBuilder.AppendLine("        {");
             foreach (var pair in _keyTypeMap)
             {
-                stringBuilder.Append("            ").Append(pair.Key).Append(" = model.").Append(pair.Key.ToTitleUpperCase()).AppendLine(";");
+                stringBuilder.Append("            ").Append(pair.Key).Append(" = model.")
+                    .Append(pair.Key.ToTitleUpperCase()).AppendLine(";");
             }
+
             stringBuilder.AppendLine("        }");
             stringBuilder.AppendLine("    }");
             stringBuilder.AppendLine("}");
 
+            string projectPath = Directory.GetCurrentDirectory();
             string fileName = _entityName + ".cs";
-            FileInfo info = new FileInfo(_path);
-            string path = info.DirectoryName + "/" + fileName;
+            string[] filePathList = Directory.GetFiles(projectPath, "*.cs", System.IO.SearchOption.AllDirectories);
+            string overrideFullPath = null;
+            foreach (var filepath in filePathList)
+            {
+                if (Path.GetExtension(filepath) != ".cs")
+                {
+                    continue;
+                }
 
-            FileUtil.SaveText(stringBuilder.ToString(), path);
-            
-            Debug.Log(path+"に生成しました");
+                if (Path.GetFileName(filepath) != fileName)
+                {
+                    continue;
+                }
+
+                overrideFullPath = filepath;
+
+                break;
+            }
+
+            if (overrideFullPath == null)
+            {
+                FileInfo info = new FileInfo(_path);
+                string path = info.DirectoryName + "/" + fileName;
+                FileUtil.SaveText(stringBuilder.ToString(), path);
+                Debug.Log(path + "に生成しました");
+            }
+            else
+            {
+                FileUtil.SaveText(stringBuilder.ToString(), overrideFullPath);
+                Debug.Log(overrideFullPath + "を上書きしました");
+            }
         }
 
         void GenerateModel()
@@ -218,15 +251,16 @@ namespace FrameworkEditor
             stringBuilder.AppendLine("{");
             stringBuilder.Append("    public class ").Append(_modelName).AppendLine(" : ModelBase");
             stringBuilder.AppendLine("    {");
-            
+
             foreach (var pair in _keyTypeMap)
             {
-                stringBuilder.Append("        public ").Append(pair.Value).Append(" ").Append(pair.Key.ToTitleUpperCase()).AppendLine(" { get; }");
+                stringBuilder.Append("        public ").Append(pair.Value).Append(" ")
+                    .Append(pair.Key.ToTitleUpperCase()).AppendLine(" { get; }");
                 stringBuilder.AppendLine();
             }
 
             stringBuilder.Append("        public ").Append(_modelName).Append("(");
-            int i = 0; 
+            int i = 0;
             foreach (var pair in _keyTypeMap)
             {
                 if (_keyTypeMap.Count - 1 <= i)
@@ -237,35 +271,68 @@ namespace FrameworkEditor
                 {
                     stringBuilder.Append(pair.Value).Append(" ").Append(pair.Key).Append(",");
                 }
+
                 i++;
             }
+
             stringBuilder.AppendLine("");
             stringBuilder.AppendLine("        {");
             foreach (var pair in _keyTypeMap)
             {
-                stringBuilder.Append("            ").Append(pair.Key.ToTitleUpperCase()).Append(" = ").Append(pair.Key).AppendLine(";");
+                stringBuilder.Append("            ").Append(pair.Key.ToTitleUpperCase()).Append(" = ").Append(pair.Key)
+                    .AppendLine(";");
             }
+
             stringBuilder.AppendLine("        }");
 
-            stringBuilder.Append("        public ").Append(_modelName).Append("(").Append(_modelName).AppendLine(" original)");
+            stringBuilder.Append("        public ").Append(_modelName).Append("(").Append(_modelName)
+                .AppendLine(" original)");
             stringBuilder.AppendLine("        {");
             foreach (var pair in _keyTypeMap)
             {
-                stringBuilder.Append("            ").Append(pair.Key.ToTitleUpperCase()).Append(" = ").Append("original.").Append(pair.Key.ToTitleUpperCase()).AppendLine(";");
+                stringBuilder.Append("            ").Append(pair.Key.ToTitleUpperCase()).Append(" = ")
+                    .Append("original.").Append(pair.Key.ToTitleUpperCase()).AppendLine(";");
             }
+
             stringBuilder.AppendLine("        }");
-            
-            
+
+
             stringBuilder.AppendLine("    }");
             stringBuilder.AppendLine("}");
 
+            string projectPath = Directory.GetCurrentDirectory();
             string fileName = _modelName + ".cs";
-            FileInfo info = new FileInfo(_path);
-            string path = info.DirectoryName + "/" + fileName;
+            string[] filePathList = Directory.GetFiles(projectPath, "*.cs", System.IO.SearchOption.AllDirectories);
+            string overrideFullPath = null;
+            foreach (var filepath in filePathList)
+            {
+                if (Path.GetExtension(filepath) != ".cs")
+                {
+                    continue;
+                }
 
-            FileUtil.SaveText(stringBuilder.ToString(), path);
-            
-            Debug.Log(path+"に生成しました");
+                if (Path.GetFileName(filepath) != fileName)
+                {
+                    continue;
+                }
+
+                overrideFullPath = filepath;
+
+                break;
+            }
+
+            if (overrideFullPath == null)
+            {
+                FileInfo info = new FileInfo(_path);
+                string path = info.DirectoryName + "/" + fileName;
+                FileUtil.SaveText(stringBuilder.ToString(), path);
+                Debug.Log(path + "に生成しました");
+            }
+            else
+            {
+                FileUtil.SaveText(stringBuilder.ToString(), overrideFullPath);
+                Debug.Log(overrideFullPath + "を上書きしました");
+            }
         }
 
         void GeneratePrimaryKey()
@@ -275,7 +342,8 @@ namespace FrameworkEditor
             stringBuilder.AppendLine();
             stringBuilder.Append("namespace ").AppendLine(_namespace);
             stringBuilder.AppendLine("{");
-            stringBuilder.Append("    public class ").Append(_playerDataName).Append("PrimaryKey : IPrimaryKey<").Append(_primaryKeyName).Append(", ").Append(_modelName).AppendLine(">");
+            stringBuilder.Append("    public class ").Append(_playerDataName).Append("PrimaryKey : IPrimaryKey<")
+                .Append(_primaryKeyName).Append(", ").Append(_modelName).AppendLine(">");
             stringBuilder.AppendLine("    {");
             stringBuilder.Append("        ").Append(_modelName).AppendLine(" _model;");
             stringBuilder.AppendLine();
@@ -323,15 +391,41 @@ namespace FrameworkEditor
             stringBuilder.AppendLine("    }");
             stringBuilder.AppendLine("}");
 
+            string projectPath = Directory.GetCurrentDirectory();
             string fileName = _primaryKeyName + ".cs";
-            FileInfo info = new FileInfo(_path);
-            string path = info.DirectoryName + "/" + fileName;
+            string[] filePathList = Directory.GetFiles(projectPath, "*.cs", System.IO.SearchOption.AllDirectories);
+            string overrideFullPath = null;
+            foreach (var filepath in filePathList)
+            {
+                if (Path.GetExtension(filepath) != ".cs")
+                {
+                    continue;
+                }
 
-            FileUtil.SaveText(stringBuilder.ToString(), path);
-            
-            Debug.Log(path+"に生成しました");
+                if (Path.GetFileName(filepath) != fileName)
+                {
+                    continue;
+                }
+
+                overrideFullPath = filepath;
+
+                break;
+            }
+
+            if (overrideFullPath == null)
+            {
+                FileInfo info = new FileInfo(_path);
+                string path = info.DirectoryName + "/" + fileName;
+                FileUtil.SaveText(stringBuilder.ToString(), path);
+                Debug.Log(path + "に生成しました");
+            }
+            else
+            {
+                FileUtil.SaveText(stringBuilder.ToString(), overrideFullPath);
+                Debug.Log(overrideFullPath + "を上書きしました");
+            }
         }
-        
+
         void GenerateDataStore()
         {
             StringBuilder stringBuilder = new StringBuilder();
@@ -343,7 +437,8 @@ namespace FrameworkEditor
             stringBuilder.AppendLine();
             stringBuilder.Append("namespace ").AppendLine(_namespace);
             stringBuilder.AppendLine("{");
-            stringBuilder.Append("    public class ").Append(_datastoreName).Append(" : IPlayerDataStore<").Append(_modelName).Append(", ").Append(_primaryKeyName).AppendLine(">");
+            stringBuilder.Append("    public class ").Append(_datastoreName).Append(" : IPlayerDataStore<")
+                .Append(_modelName).Append(", ").Append(_primaryKeyName).AppendLine(">");
             stringBuilder.AppendLine("    {");
             stringBuilder.Append("        const string FILE_PATH = \"").Append(_playerDataName).AppendLine(".json\";");
             stringBuilder.AppendLine();
@@ -352,15 +447,18 @@ namespace FrameworkEditor
             stringBuilder.AppendLine("        {");
             stringBuilder.Append("            public ").Append(_entityName).AppendLine("[] Values = null;");
             stringBuilder.AppendLine();
-            stringBuilder.Append("            public static Entities ConvertFromMap(Dictionary<").Append(_primaryKeyName).Append(", ").Append(_modelName).AppendLine("> map)");
+            stringBuilder.Append("            public static Entities ConvertFromMap(Dictionary<")
+                .Append(_primaryKeyName).Append(", ").Append(_modelName).AppendLine("> map)");
             stringBuilder.AppendLine("            {");
             stringBuilder.AppendLine("                Entities entities = new Entities();");
-            stringBuilder.Append("                entities.Values = new ").Append(_entityName).AppendLine("[map.Count];");
+            stringBuilder.Append("                entities.Values = new ").Append(_entityName)
+                .AppendLine("[map.Count];");
             stringBuilder.AppendLine();
             stringBuilder.AppendLine("                int index = 0;");
             stringBuilder.AppendLine("                foreach (var model in map.Values)");
             stringBuilder.AppendLine("                {");
-            stringBuilder.Append("                    entities.Values[index] = new ").Append(_entityName).AppendLine("(model);");
+            stringBuilder.Append("                    entities.Values[index] = new ").Append(_entityName)
+                .AppendLine("(model);");
             stringBuilder.AppendLine("                    index++;");
             stringBuilder.AppendLine("                }");
             stringBuilder.AppendLine();
@@ -376,8 +474,10 @@ namespace FrameworkEditor
             stringBuilder.AppendLine();
             stringBuilder.Append("        public void Save(").Append(_modelName).AppendLine(" model)");
             stringBuilder.AppendLine("        {");
-            stringBuilder.Append("            Dictionary<").Append(_primaryKeyName).Append(", ").Append(_modelName).AppendLine("> map = Load();");
-            stringBuilder.Append("            ").Append(_primaryKeyName).Append(" primaryKey = new ").Append(_primaryKeyName).AppendLine("();");
+            stringBuilder.Append("            Dictionary<").Append(_primaryKeyName).Append(", ").Append(_modelName)
+                .AppendLine("> map = Load();");
+            stringBuilder.Append("            ").Append(_primaryKeyName).Append(" primaryKey = new ")
+                .Append(_primaryKeyName).AppendLine("();");
             stringBuilder.AppendLine("            primaryKey.Setup(model);");
             stringBuilder.AppendLine();
             stringBuilder.AppendLine("            if (map.ContainsKey(primaryKey))");
@@ -390,22 +490,27 @@ namespace FrameworkEditor
             stringBuilder.AppendLine("            }");
             stringBuilder.AppendLine();
             stringBuilder.AppendLine("            string json = JsonUtility.ToJson (Entities.ConvertFromMap(map));");
-            stringBuilder.AppendLine("            string filePath = $\"{Application.persistentDataPath}/{FILE_PATH}\";");
+            stringBuilder.AppendLine(
+                "            string filePath = $\"{Application.persistentDataPath}/{FILE_PATH}\";");
             stringBuilder.AppendLine("            StreamWriter writer = File.CreateText(filePath);");
             stringBuilder.AppendLine("            writer.Write(json);");
             stringBuilder.AppendLine("            writer.Close();");
             stringBuilder.AppendLine("            DebugLog.Normal(this.GetType() + \"を保存しました。\" + filePath);");
             stringBuilder.AppendLine("        }");
             stringBuilder.AppendLine();
-            stringBuilder.Append("       public Dictionary<").Append(_primaryKeyName).Append(", ").Append(_modelName).AppendLine("> Load()");
+            stringBuilder.Append("       public Dictionary<").Append(_primaryKeyName).Append(", ").Append(_modelName)
+                .AppendLine("> Load()");
             stringBuilder.AppendLine("        {");
-            stringBuilder.AppendLine("            if (!File.Exists($\"{Application.persistentDataPath}/{FILE_PATH}\"))");
+            stringBuilder.AppendLine(
+                "            if (!File.Exists($\"{Application.persistentDataPath}/{FILE_PATH}\"))");
             stringBuilder.AppendLine("            {");
             stringBuilder.AppendLine("                DebugLog.Normal(FILE_PATH + \"が存在していません\");");
-            stringBuilder.Append("                return new Dictionary<").Append(_primaryKeyName).Append(", ").Append(_modelName).AppendLine(">();");
+            stringBuilder.Append("                return new Dictionary<").Append(_primaryKeyName).Append(", ")
+                .Append(_modelName).AppendLine(">();");
             stringBuilder.AppendLine("            }");
             stringBuilder.AppendLine();
-            stringBuilder.AppendLine("            string assetsPath = $\"{Application.persistentDataPath}/{FILE_PATH}\";");
+            stringBuilder.AppendLine(
+                "            string assetsPath = $\"{Application.persistentDataPath}/{FILE_PATH}\";");
             stringBuilder.AppendLine("            string json = \"\";");
             stringBuilder.AppendLine("#if UNITY_ANDROID && !UNITY_EDITOR");
             stringBuilder.AppendLine("            WWW www = new WWW(assetsPath);");
@@ -427,31 +532,38 @@ namespace FrameworkEditor
             stringBuilder.AppendLine("            if (string.IsNullOrEmpty(json))");
             stringBuilder.AppendLine("            {");
             stringBuilder.AppendLine("                DebugLog.Warning(FILE_PATH + \"が存在していますがファイルの中身がありません\");");
-            stringBuilder.Append("                return new Dictionary<").Append(_primaryKeyName).Append(", ").Append(_modelName).AppendLine(">();");
+            stringBuilder.Append("                return new Dictionary<").Append(_primaryKeyName).Append(", ")
+                .Append(_modelName).AppendLine(">();");
             stringBuilder.AppendLine("            }");
             stringBuilder.AppendLine();
-            stringBuilder.Append("            var map = new Dictionary<").Append(_primaryKeyName).Append(", ").Append(_modelName).AppendLine(">();");
+            stringBuilder.Append("            var map = new Dictionary<").Append(_primaryKeyName).Append(", ")
+                .Append(_modelName).AppendLine(">();");
             stringBuilder.AppendLine("            var parse = JsonUtility.FromJson<Entities>(json);");
             stringBuilder.AppendLine();
             stringBuilder.AppendLine("            foreach (var entity in parse.Values)");
             stringBuilder.AppendLine("            {");
-            stringBuilder.Append("                ").Append(_modelName).Append(" model = new ").Append(_modelName).AppendLine("(");
+            stringBuilder.Append("                ").Append(_modelName).Append(" model = new ").Append(_modelName)
+                .AppendLine("(");
             int i = 0;
             foreach (var pair in _keyTypeMap)
             {
                 if (_keyTypeMap.Count - 1 <= i)
                 {
-                    stringBuilder.Append("                    entity.").Append(pair.Key.ToTitleUpperCase()).AppendLine(");");   
+                    stringBuilder.Append("                    entity.").Append(pair.Key.ToTitleUpperCase())
+                        .AppendLine(");");
                 }
                 else
                 {
-                    stringBuilder.Append("                    entity.").Append(pair.Key.ToTitleUpperCase()).AppendLine(",");
+                    stringBuilder.Append("                    entity.").Append(pair.Key.ToTitleUpperCase())
+                        .AppendLine(",");
                 }
 
                 i++;
             }
+
             stringBuilder.AppendLine();
-            stringBuilder.Append("                ").Append(_primaryKeyName).Append(" primaryKey = new ").Append(_primaryKeyName).AppendLine("();");
+            stringBuilder.Append("                ").Append(_primaryKeyName).Append(" primaryKey = new ")
+                .Append(_primaryKeyName).AppendLine("();");
             stringBuilder.AppendLine("                primaryKey.Setup(model);");
             stringBuilder.AppendLine("                map.Add(primaryKey, model);");
             stringBuilder.AppendLine("            }");
@@ -460,13 +572,39 @@ namespace FrameworkEditor
             stringBuilder.AppendLine("    }");
             stringBuilder.AppendLine("}");
 
+            string projectPath = Directory.GetCurrentDirectory();
             string fileName = _datastoreName + ".cs";
-            FileInfo info = new FileInfo(_path);
-            string path = info.DirectoryName + "/" + fileName;
+            string[] filePathList = Directory.GetFiles(projectPath, "*.cs", System.IO.SearchOption.AllDirectories);
+            string overrideFullPath = null;
+            foreach (var filepath in filePathList)
+            {
+                if (Path.GetExtension(filepath) != ".cs")
+                {
+                    continue;
+                }
 
-            FileUtil.SaveText(stringBuilder.ToString(), path);
-            
-            Debug.Log(path+"に生成しました");
+                if (Path.GetFileName(filepath) != fileName)
+                {
+                    continue;
+                }
+
+                overrideFullPath = filepath;
+
+                break;
+            }
+
+            if (overrideFullPath == null)
+            {
+                FileInfo info = new FileInfo(_path);
+                string path = info.DirectoryName + "/" + fileName;
+                FileUtil.SaveText(stringBuilder.ToString(), path);
+                Debug.Log(path + "に生成しました");
+            }
+            else
+            {
+                FileUtil.SaveText(stringBuilder.ToString(), overrideFullPath);
+                Debug.Log(overrideFullPath + "を上書きしました");
+            }
         }
 
         void GenerateRepository()
@@ -476,7 +614,9 @@ namespace FrameworkEditor
             stringBuilder.AppendLine();
             stringBuilder.Append("namespace ").AppendLine(_namespace);
             stringBuilder.AppendLine("{");
-            stringBuilder.Append("    public class ").Append(_repositoryName).Append(" : PlayerBaseRepository<").Append(_modelName).Append(", ").Append(_datastoreName).Append(", ").Append(_primaryKeyName).AppendLine(">");
+            stringBuilder.Append("    public class ").Append(_repositoryName).Append(" : PlayerBaseRepository<")
+                .Append(_modelName).Append(", ").Append(_datastoreName).Append(", ").Append(_primaryKeyName)
+                .AppendLine(">");
             stringBuilder.AppendLine("    {");
             stringBuilder.Append("        public static ").Append(_repositoryName).AppendLine(" I { get; }");
             stringBuilder.AppendLine();
@@ -485,19 +625,46 @@ namespace FrameworkEditor
             stringBuilder.Append("            I = new ").Append(_repositoryName).AppendLine("();");
             stringBuilder.AppendLine("        }");
             stringBuilder.AppendLine();
-            stringBuilder.Append("        ").Append(_repositoryName).Append("() : base(new ").Append(_datastoreName).AppendLine("()) {}");
+            stringBuilder.Append("        ").Append(_repositoryName).Append("() : base(new ").Append(_datastoreName)
+                .AppendLine("()) {}");
             stringBuilder.AppendLine("    }");
             stringBuilder.AppendLine("}");
-            
-            string fileName = _repositoryName + ".cs";
-            FileInfo info = new FileInfo(_path);
-            string path = info.DirectoryName + "/" + fileName;
 
-            FileUtil.SaveText(stringBuilder.ToString(), path);
-            
-            Debug.Log(path+"に生成しました");
+            string projectPath = Directory.GetCurrentDirectory();
+            string fileName = _repositoryName + ".cs";
+            string[] filePathList = Directory.GetFiles(projectPath, "*.cs", System.IO.SearchOption.AllDirectories);
+            string overrideFullPath = null;
+            foreach (var filepath in filePathList)
+            {
+                if (Path.GetExtension(filepath) != ".cs")
+                {
+                    continue;
+                }
+
+                if (Path.GetFileName(filepath) != fileName)
+                {
+                    continue;
+                }
+
+                overrideFullPath = filepath;
+
+                break;
+            }
+
+            if (overrideFullPath == null)
+            {
+                FileInfo info = new FileInfo(_path);
+                string path = info.DirectoryName + "/" + fileName;
+                FileUtil.SaveText(stringBuilder.ToString(), path);
+                Debug.Log(path + "に生成しました");
+            }
+            else
+            {
+                FileUtil.SaveText(stringBuilder.ToString(), overrideFullPath);
+                Debug.Log(overrideFullPath + "を上書きしました");
+            }
         }
-    }    
+    }
 }
 
 #endif
