@@ -4,17 +4,17 @@ using UnityEngine;
 
 namespace Framework
 {
-    public class AbsolutelyActiveCorutine : MonoBehaviour
+    public class AbsolutelyActiveCoroutine : MonoBehaviour
     {
-        static AbsolutelyActiveCorutine instance;
+        static AbsolutelyActiveCoroutine instance;
 
         static void CreateIfNeeded()
         {
             if (instance == null)
             {
                 GameObject obj = new GameObject();
-                obj.name = "AbsolutelyActiveCorutine";
-                instance = obj.AddComponent<AbsolutelyActiveCorutine>();
+                obj.name = "AbsolutelyActiveCoroutine";
+                instance = obj.AddComponent<AbsolutelyActiveCoroutine>();
                 DontDestroyOnLoad(obj);
             }
         }
