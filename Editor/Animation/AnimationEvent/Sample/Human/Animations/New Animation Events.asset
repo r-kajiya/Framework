@@ -51,6 +51,39 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
+--- !u!114 &-734479985501568115
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8ea88a6765f47838d0776b9a9e83d58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: _frame
+      Entry: 3
+      Data: 59
+    - Name: _animationEventType
+      Entry: 3
+      Data: 0
+    - Name: _effectPrefab
+      Entry: 6
+      Data: 
+    - Name: _effectParentName
+      Entry: 6
+      Data: 
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -70,7 +103,6 @@ MonoBehaviour:
     - {fileID: 7600064145362744087}
     - {fileID: -4792024316610111584}
     - {fileID: 6321659837405905982}
-    - {fileID: 3367961167691268177}
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
@@ -82,7 +114,7 @@ MonoBehaviour:
         mscorlib
     - Name: 
       Entry: 12
-      Data: 4
+      Data: 3
     - Name: 
       Entry: 10
       Data: 0
@@ -92,9 +124,6 @@ MonoBehaviour:
     - Name: 
       Entry: 10
       Data: 2
-    - Name: 
-      Entry: 10
-      Data: 3
     - Name: 
       Entry: 13
       Data: 
@@ -126,6 +155,89 @@ MonoBehaviour:
     - Name: _animationClip
       Entry: 10
       Data: 0
+    - Name: _isOverrideAnimationClipName
+      Entry: 5
+      Data: false
+    - Name: _overrideAnimationClipName
+      Entry: 6
+      Data: 
+    - Name: _animationEventObjectMap
+      Entry: 7
+      Data: 0|System.Collections.Generic.Dictionary`2[[System.Int32, mscorlib],[Framework.AnimationEventObject,
+        Assembly-Framework]], mscorlib
+    - Name: comparer
+      Entry: 7
+      Data: 1|System.Collections.Generic.GenericEqualityComparer`1[[System.Int32,
+        mscorlib]], mscorlib
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+--- !u!114 &902343927807017182
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8ea88a6765f47838d0776b9a9e83d58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: _frame
+      Entry: 3
+      Data: 55
+    - Name: _animationEventType
+      Entry: 3
+      Data: 0
+    - Name: _effectPrefab
+      Entry: 6
+      Data: 
+    - Name: _effectParentName
+      Entry: 6
+      Data: 
+--- !u!114 &2121239985507176323
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a4162023e8a4a06ba9fd862d9ffd108, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: _animationClip
+      Entry: 6
+      Data: 
     - Name: _isOverrideAnimationClipName
       Entry: 5
       Data: false
@@ -338,6 +450,39 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
+--- !u!114 &7422903059275290333
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8ea88a6765f47838d0776b9a9e83d58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: _frame
+      Entry: 3
+      Data: 54
+    - Name: _animationEventType
+      Entry: 3
+      Data: 0
+    - Name: _effectPrefab
+      Entry: 6
+      Data: 
+    - Name: _effectParentName
+      Entry: 6
+      Data: 
 --- !u!114 &7600064145362744087
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -356,6 +501,9 @@ MonoBehaviour:
     ReferencedUnityObjects:
     - {fileID: 7400000, guid: 640ff085475544e33a6aa98d6258891a, type: 2}
     - {fileID: 2671524238343730470}
+    - {fileID: 902343927807017182}
+    - {fileID: -734479985501568115}
+    - {fileID: 7422903059275290333}
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
@@ -383,7 +531,7 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 12
-      Data: 1
+      Data: 4
     - Name: 
       Entry: 7
       Data: 
@@ -393,6 +541,42 @@ MonoBehaviour:
     - Name: $v
       Entry: 10
       Data: 1
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 55
+    - Name: $v
+      Entry: 10
+      Data: 2
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 59
+    - Name: $v
+      Entry: 10
+      Data: 3
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 54
+    - Name: $v
+      Entry: 10
+      Data: 4
     - Name: 
       Entry: 8
       Data: 
