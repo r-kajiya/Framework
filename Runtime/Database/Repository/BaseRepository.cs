@@ -26,11 +26,7 @@ namespace Framework
 
         public TModel Get(TPrimaryKey primaryKey)
         {
-            if (_isDirty)
-            {
-                _isDirty = false;
-                Load();
-            }
+            ReLoad();
 
             if (Contains(primaryKey))
             {
@@ -42,13 +38,18 @@ namespace Framework
 
         public List<TModel> GetAll()
         {
+            ReLoad();
+
+            return _list;
+        }
+        
+        void ReLoad()
+        {
             if (_isDirty)
             {
                 _isDirty = false;
                 Load();
             }
-
-            return _list;
         }
 
         bool Contains(TPrimaryKey primaryKey)
