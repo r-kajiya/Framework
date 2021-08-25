@@ -91,7 +91,7 @@ namespace Framework
 
             public void Execute(SystemContext self, SystemContext next, SystemContextContainer container)
             {
-                AbsolutelyActiveCorutine.Subscribe(DoExecute(self, next, container));
+                AbsolutelyActiveCoroutine.Subscribe(DoExecute(self, next, container));
             }
 
             IEnumerator DoExecute(SystemContext self, SystemContext next, SystemContextContainer container)

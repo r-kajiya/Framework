@@ -13,7 +13,7 @@ namespace Framework
         {
             Run();
             
-            AbsolutelyActiveCorutine.Subscribe(_firstSystemContext.DoInitRun());
+            AbsolutelyActiveCoroutine.Subscribe(_firstSystemContext.DoInitRun());
         }
     }
 }
