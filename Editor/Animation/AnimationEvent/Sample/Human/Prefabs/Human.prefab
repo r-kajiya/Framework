@@ -199,10 +199,12 @@ SkinnedMeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -309,7 +311,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &5537963469120256875
 Transform:
   m_ObjectHideFlags: 0
@@ -371,11 +373,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b43f906d5a38440aa627472bfb0ef06, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _playAutomaticallyOnAwake: 0
   _playAutomaticallyOnInitialize: 0
   _animationClips:
   - {fileID: 7400000, guid: 640ff085475544e33a6aa98d6258891a, type: 2}
   - {fileID: 7400000, guid: c0cf73d2753b340ceb5e62741ba9a725, type: 2}
   - {fileID: 7400000, guid: 7817ebf61b6214e32b79246ff22fd0ad, type: 2}
+  _blendTrees: []
 --- !u!1 &5537963469120677519
 GameObject:
   m_ObjectHideFlags: 0

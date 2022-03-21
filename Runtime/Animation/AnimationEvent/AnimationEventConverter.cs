@@ -17,7 +17,7 @@ namespace Framework
                 AnimationEvent animationEvent = new AnimationEvent();
 
                 animationEvent.time = animationEventObjectPair.Value.Time;
-                animationEvent.functionName = animationEventObjectPair.Value.AnimationEventType.ToString();
+                animationEvent.functionName = animationEventObjectPair.Value.AnimationEventName;
                 animationEvent.objectReferenceParameter = animationEventObjectPair.Value;
                 animationEventList.Add(animationEvent);
             }

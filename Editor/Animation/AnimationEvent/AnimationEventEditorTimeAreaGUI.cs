@@ -13,6 +13,7 @@ namespace FrameworkEditor
         float _zoomScale = 1.0f;
         Vector2 _scrollPos;
         AnimationEventEditorWindowInfo _editorWindowInfo;
+        int _overlayLineXTick;
 
         public override void OnGUI(AnimationEventEditorWindowInfo editorWindowInfo)
         {
@@ -101,8 +102,10 @@ namespace FrameworkEditor
 
             if (EditorWindowInfo.IsPlaying)
             {
-                DrawOverlayLine(rect, space, margin, timeAreaWidth, timeAreaHeight);
+                UpdateTick();
             }
+            
+            DrawOverlayLine(rect,margin, space, timeAreaHeight);
         }
 
         void DrawTimeline(float x, float y, float lineHeight, bool separation)
@@ -147,7 +150,7 @@ namespace FrameworkEditor
                 }
                 
                 EditorWindowInfo.Selector.Animator.ImportEvent();
-                
+
                 EditorUtility.SetDirty(EditorWindowInfo.Selector.AnimationEvents);
                 AssetDatabase.SaveAssets();
             }
@@ -171,17 +174,22 @@ namespace FrameworkEditor
             GUI.Label(textPosition, text, textStyle);
         }
 
-        void DrawOverlayLine(Rect rect, float space, float margin, float timeAreaWidth, float windowHeight)
+        void UpdateTick()
+        {
+            _overlayLineXTick = (int)(EditorWindowInfo.Selector.Animator.GetTime() * 100.0f);
+        }
+
+        void DrawOverlayLine(Rect rect, float margin, float space, float windowHeight)
         {
             if (rect == new Rect(new Vector2(), new Vector2(1.0f, 1.0f)))
             {
                 return;
             }
-            float overlayLineY = 0;
+            
             float overlayStartPosX = margin + rect.xMin;
-            int tick = (int)(EditorWindowInfo.Selector.Animator.GetTime() * 100.0f);
-            float overlayLineX = tick * space + overlayStartPosX;
-
+            float overlayLineX = _overlayLineXTick * space + overlayStartPosX;
+            
+            const float overlayLineY = 0;
             SirenixEditorGUI.DrawVerticalLineSeperator(overlayLineX, overlayLineY, windowHeight, 1.0f);
         }
         

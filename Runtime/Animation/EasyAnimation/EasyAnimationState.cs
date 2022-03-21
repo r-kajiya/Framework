@@ -57,6 +57,13 @@ namespace Framework
             return !_playable.IsDone();
         }
 
+        public bool IsPlayingOnce()
+        {
+            float elapsedTime = GetElapsedTime();
+            // -0.01しないと小数点誤差がでることがある
+            return elapsedTime <= Clip.length - 0.01f;
+        }
+
         public float GetElapsedTime()
         {
             return (float) _playable.GetTime();
@@ -69,6 +76,8 @@ namespace Framework
 
         public void SetTime(float time)
         {
+            // UnityBug : https://forum.unity.com/threads/resetting-animationclipplayable-causes-events-to-play-multiple-times.614047/
+            _playable.SetTime(time);
             _playable.SetTime(time);
 
             if (time >= _playable.GetDuration())

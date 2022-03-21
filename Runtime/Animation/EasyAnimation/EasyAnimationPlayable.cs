@@ -63,7 +63,7 @@ namespace Framework
             var target = _stateManager.Find(index);
             if (target == null)
             {
-                DebugLog.Error($"EasyAnimationPlayable.Play : アニメーションステートが存在しないため再生できませんでした。{index}");
+                DebugLog.Error($"EasyAnimationPlayable.Play : アニメーションステートが存在しないため再生できませんでした。{index}", DebugLogColor.animation);
                 return false;
             }
 
@@ -74,7 +74,7 @@ namespace Framework
         {
             if (!_stateManager.Exists(stateName))
             {
-                DebugLog.Error($"EasyAnimationPlayable.Play : アニメーションステートが存在しないため再生できませんでした。{stateName}");
+                DebugLog.Error($"EasyAnimationPlayable.Play : アニメーションステートが存在しないため再生できませんでした。{stateName}", DebugLogColor.animation);
                 return false;
             }
 
@@ -98,7 +98,7 @@ namespace Framework
                 }
             }
 
-            DebugLog.Normal($"EasyAnimationPlayable.Play : {stateName}を再生します");
+            DebugLog.Normal($"EasyAnimationPlayable.Play : {stateName}を再生します", DebugLogColor.animation);
 
             return true;
         }
@@ -108,7 +108,7 @@ namespace Framework
             var target = _stateManager.FindBlend(blendTreeName);
             if (target == null)
             {
-                DebugLog.Error($"EasyAnimationPlayable.Blend : ブレンドアニメーションステートが存在しないため再生できませんでした。{blendTreeName}");
+                DebugLog.Error($"EasyAnimationPlayable.Blend : ブレンドアニメーションステートが存在しないため再生できませんでした。{blendTreeName}", DebugLogColor.animation);
                 return false;
             }
             
@@ -125,7 +125,7 @@ namespace Framework
             target.Play();
             target.ComputeDestinationWeights(0f, 0f);
 
-            DebugLog.Normal($"EasyAnimationPlayable.Blend : {blendTreeName}を再生します。");
+            DebugLog.Normal($"EasyAnimationPlayable.Blend : {blendTreeName}を再生します。", DebugLogColor.animation);
 
             return true;
         }
@@ -134,7 +134,7 @@ namespace Framework
         {
             if (_blendingName != blendTreeName)
             {
-                DebugLog.Warning($"EasyAnimationPlayable.SetBlendParameter : ブレンドアニメーション中じゃありません。{blendTreeName}");
+                DebugLog.Warning($"EasyAnimationPlayable.SetBlendParameter : ブレンドアニメーション中じゃありません。{blendTreeName}", DebugLogColor.animation);
                 return false;
             }
             
@@ -142,7 +142,7 @@ namespace Framework
             
             if (blend == null)
             {
-                DebugLog.Warning($"EasyAnimationPlayable.SetBlendParameter : 存在しないブレンドアニメーションです。{blendTreeName}");
+                DebugLog.Warning($"EasyAnimationPlayable.SetBlendParameter : 存在しないブレンドアニメーションです。{blendTreeName}", DebugLogColor.animation);
                 return false;
             }
             
@@ -161,7 +161,7 @@ namespace Framework
             var target = _stateManager.Find(stateName);
             if (target == null)
             {
-                DebugLog.Error($"EasyAnimationPlayable.GetState : アニメーションステートが存在しないため取得できませんでした。{stateName}");
+                DebugLog.Error($"EasyAnimationPlayable.GetState : アニメーションステートが存在しないため取得できませんでした。{stateName}", DebugLogColor.animation);
                 return null;
             }
 
@@ -174,7 +174,7 @@ namespace Framework
 
             if (target == null)
             {
-                DebugLog.Error($"EasyAnimationPlayable.GetState : アニメーションステートが存在しないため取得できませんでした。{stateIndex}");
+                DebugLog.Error($"EasyAnimationPlayable.GetState : アニメーションステートが存在しないため取得できませんでした。{stateIndex}", DebugLogColor.animation);
                 return null;
             }
 
@@ -223,7 +223,7 @@ namespace Framework
 
         public void SetSpeed(float speed)
         {
-            DebugLog.Normal($"EasyAnimationPlayable.SetSpeed : 再生速度を{speed}にします");
+            DebugLog.Normal($"EasyAnimationPlayable.SetSpeed : 再生速度を{speed}にします", DebugLogColor.animation);
 
             foreach (var state in _stateManager.states)
             {
@@ -238,7 +238,7 @@ namespace Framework
 
         public void Stop()
         {
-            DebugLog.Normal($"EasyAnimationPlayable.Stop : 停止します");
+            DebugLog.Normal($"EasyAnimationPlayable.Stop : 停止します", DebugLogColor.animation);
 
             foreach (var state in _stateManager.states)
             {

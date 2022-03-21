@@ -21,7 +21,7 @@ namespace Framework
         {
             if (_animation.clip == null)
             {
-                DebugLog.Error("アニメーションクリップがnullです" + "," + gameObject.name);
+                DebugLog.Error("アニメーションクリップがnullです" + "," + gameObject.name, DebugLogColor.animation);
                 return false;
             }
 
@@ -32,19 +32,19 @@ namespace Framework
         {
             if (_animation.clip == null)
             {
-                DebugLog.Error("アニメーションクリップがnullです" + "," + gameObject.name);
+                DebugLog.Error("アニメーションクリップがnullです" + "," + gameObject.name, DebugLogColor.animation);
                 return false;
             }
 
             if (_animation.GetClip(clipName) == null)
             {
-                DebugLog.Error("アニメーションクリップが存在しません。" + clipName + "," + gameObject.name);
+                DebugLog.Error("アニメーションクリップが存在しません。" + clipName + "," + gameObject.name, DebugLogColor.animation);
                 return false;
             }
 
             if (_animation.isPlaying)
             {
-                DebugLog.Error("アニメーションは再生中です。" + _animation.clip.name + "," + gameObject.name);
+                DebugLog.Error("アニメーションは再生中です。" + _animation.clip.name + "," + gameObject.name, DebugLogColor.animation);
                 return false;
             }
 
@@ -62,7 +62,7 @@ namespace Framework
         {
             if (_animation.clip == null)
             {
-                DebugLog.Error("アニメーションクリップがnullです" + "," + gameObject.name);
+                DebugLog.Error("アニメーションクリップがnullです" + "," + gameObject.name, DebugLogColor.animation);
                 return false;
             }
 

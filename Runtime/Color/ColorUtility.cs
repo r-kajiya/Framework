@@ -23,5 +23,15 @@ namespace Framework
             }
             return color;
         }
+        
+        public static string ColorToHex(this Color self)
+        {
+            return UnityEngine.ColorUtility.ToHtmlStringRGB(self);
+        }
+
+        public static Color ToFloat(int r, int g, int b, int a = 255)
+        {
+            return new Color(r/(float)255, g/(float)255, b/(float)255, a/(float)255);
+        }
     }
 }

@@ -53,6 +53,12 @@ namespace Framework
             InternalLog(log, Color.red);
         }
 
+        public void LogColor(string log, Color color)
+        {
+            IfNeededClearLog();
+            InternalLog(log, color);
+        }
+
         public void ClearPlayerData()
         {
             string[] filePaths = Directory.GetFiles(Application.persistentDataPath);

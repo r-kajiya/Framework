@@ -43,11 +43,11 @@ namespace Framework
                 int inputCount = addState.index + 1;
                 mixer.SetInputCount(inputCount);
                 graph.Connect(addState.Playable, 0, mixer, addState.index);
-                DebugLog.Normal($"EasyAnimationStateManager.Add : アニメーションステートを追加しました。{clip.name}");
+                DebugLog.Normal($"EasyAnimationStateManager.Add : アニメーションステートを追加しました。{clip.name}", DebugLogColor.animation);
                 return true;
             }
             
-            DebugLog.Warning($"EasyAnimationStateManager.Add : 同名アニメーションステートが存在しているため、追加に失敗しました。{clip.name}");
+            DebugLog.Warning($"EasyAnimationStateManager.Add : 同名アニメーションステートが存在しているため、追加に失敗しました。{clip.name}", DebugLogColor.animation);
             return false;
         }
 
@@ -64,11 +64,11 @@ namespace Framework
                 }
 
                 blends.Add(new EasyAnimationStateBlend(this, tree, graph, mixer));
-                DebugLog.Normal($"EasyAnimationStateManager.AddBlend : ブレンドアニメーションステートを追加しました。{tree.name}");
+                DebugLog.Normal($"EasyAnimationStateManager.AddBlend : ブレンドアニメーションステートを追加しました。{tree.name}", DebugLogColor.animation);
                 return true;
             }
 
-            DebugLog.Warning($"EasyAnimationStateManager.AddBlend : 同名ブレンドアニメーションステートが存在しているため、追加に失敗しました。{tree.name}");
+            DebugLog.Warning($"EasyAnimationStateManager.AddBlend : 同名ブレンドアニメーションステートが存在しているため、追加に失敗しました。{tree.name}", DebugLogColor.animation);
             return false;
         }
 
@@ -82,7 +82,7 @@ namespace Framework
                 return true;
             }
 
-            DebugLog.Warning($"EasyAnimationStateManager.Remove : アニメーションステートが存在していないため、追加に失敗しました。{removeStateName}");
+            DebugLog.Warning($"EasyAnimationStateManager.Remove : アニメーションステートが存在していないため、追加に失敗しました。{removeStateName}", DebugLogColor.animation);
             return false;
         }
 
@@ -92,11 +92,11 @@ namespace Framework
             if (findState != null)
             {
                 blends.Remove(findState);
-                DebugLog.Normal($"EasyAnimationStateManager.RemoveBlend : ブレンドアニメーションステートを削除しました。{removeStateName}");
+                DebugLog.Normal($"EasyAnimationStateManager.RemoveBlend : ブレンドアニメーションステートを削除しました。{removeStateName}", DebugLogColor.animation);
                 return true;
             }
 
-            DebugLog.Warning($"EasyAnimationStateManager.RemoveBlend : ブレンドアニメーションステートが存在していないため、追加に失敗しました。{removeStateName}");
+            DebugLog.Warning($"EasyAnimationStateManager.RemoveBlend : ブレンドアニメーションステートが存在していないため、追加に失敗しました。{removeStateName}", DebugLogColor.animation);
             return false;
         }
     }

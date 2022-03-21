@@ -5,10 +5,10 @@ namespace FrameworkEditor
 {
     public class AnimationEventEditorAnimator
     {
-        
         EasyAnimation _easyAnimation;
         AnimationEventInvoker _animationEventInvoker;
         string _playAnimationStateName;
+        float _speed = 1.0f;
 
         public void Setup(AnimationEventInvoker animationEventInvoker)
         {
@@ -46,7 +46,7 @@ namespace FrameworkEditor
                 return;
             }
 
-            _easyAnimation.SetSpeed(1.0f);
+            _easyAnimation.SetSpeed(_speed);
             _easyAnimation.Play(stateName, 0);
             var state = _easyAnimation.GetState(stateName);
             
@@ -65,6 +65,12 @@ namespace FrameworkEditor
             if (_easyAnimation == null)
             {
                 return;
+            }
+
+            // たまにplayableが消える
+            if (_easyAnimation.Playable == null)
+            {
+                _easyAnimation.ForceInitialize();
             }
 
             _easyAnimation.Stop();
@@ -109,13 +115,12 @@ namespace FrameworkEditor
 
         public void ImportEvent()
         {
-            _easyAnimation.ImportAnimationEvents(_animationEventInvoker.AnimationEvents);
+            _easyAnimation?.ImportAnimationEvents(_animationEventInvoker?.AnimationEvents);
         }
 
-        public void ClearEvents()
+        public void SetSpeed(float speed)
         {
-            
+            _speed = speed;
         }
-        
     }
 }

@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
@@ -39,7 +38,7 @@ namespace Framework
             }
         }
 
-            [OdinSerialize]
+        [OdinSerialize]
         [DictionaryDrawerSettings( IsReadOnly = true, DisplayMode = DictionaryDisplayOptions.OneLine)]
         Dictionary<int, AnimationEventObject> _animationEventObjectMap = new Dictionary<int, AnimationEventObject>();
         public Dictionary<int, AnimationEventObject> AnimationEventObjectMap => _animationEventObjectMap;
@@ -47,7 +46,7 @@ namespace Framework
 #if UNITY_EDITOR
         public AnimationEventObject AddAt(int frame)
         {
-            var obj = AnimationEventObject.Create(frame);
+            var obj = AnimationEventObject.Create(frame, this);
             AnimationEventObjectMap.Add(frame, obj);
             AssetDatabase.AddObjectToAsset(obj, this);
             AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(this));
@@ -56,6 +55,11 @@ namespace Framework
         
         public void RemoveAt(int frame)
         {
+            if (TryGetValue(frame, out AnimationEventObject animationEventObject))
+            {
+                AssetDatabase.RemoveObjectFromAsset(animationEventObject);
+            }
+
             AnimationEventObjectMap.Remove(frame);
         }
 
@@ -72,11 +76,6 @@ namespace Framework
             }
 
             return null;
-        }
-
-        public bool IsContainsKey(int frame)
-        {
-            return AnimationEventObjectMap.ContainsKey(frame);
         }
 #endif
     }

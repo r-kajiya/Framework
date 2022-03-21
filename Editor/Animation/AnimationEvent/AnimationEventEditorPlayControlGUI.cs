@@ -8,6 +8,7 @@ namespace FrameworkEditor
     public class AnimationEventEditorPlayControlGUI: AnimationEventEditorGUI
     {
         const float BUTTON_WIDTH = 25.0f;
+        float _sliderValue = 1.0f;
         
         public override void OnGUI(AnimationEventEditorWindowInfo editorWindowInfo)
         {
@@ -47,7 +48,7 @@ namespace FrameworkEditor
                 // 最後のキーへ
             }
 
-            const float textWidth = 175.0f;
+            const float textWidth = 100.0f;
             
             if (EditorWindowInfo.Selector.NotSelectedAnimationEvents)
             {
@@ -58,6 +59,10 @@ namespace FrameworkEditor
             {
                 GUILayout.Label(EditorWindowInfo.Selector.AnimationEvents.name, EditorStyles.miniLabel, GUILayout.MaxWidth(textWidth));   
             }
+            
+            const float sliderWidth = 50.0f;
+            _sliderValue = GUILayout.HorizontalSlider(_sliderValue, 0.0f, 2.0f,GUILayout.MaxWidth(sliderWidth));
+            EditorWindowInfo.Selector.Animator.SetSpeed(_sliderValue);
         }
         
         void PlayButtonOnGUI()

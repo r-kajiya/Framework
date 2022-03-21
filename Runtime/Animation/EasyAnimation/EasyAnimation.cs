@@ -20,6 +20,7 @@ namespace Framework
         EasyBlendTree[] _blendTrees = null;
 
         EasyAnimationPlayable _playable;
+        public EasyAnimationPlayable Playable => _playable;
         PlayableGraph _playableGraph;
         Animator _animator;
         float _speedTemp;
@@ -44,10 +45,15 @@ namespace Framework
         {
             if (_isInitialized)
             {
-                DebugLog.Warning("EasyAnimation:Initialize:初期化済みです。");
+                DebugLog.Warning("EasyAnimation:Initialize:初期化済みです。", DebugLogColor.animation);
                 return;
             }
-            
+
+            ForceInitialize();
+        }
+
+        public void ForceInitialize()
+        {
             _isInitialized = true;
             _animator = GetComponent<Animator>();
 
@@ -182,12 +188,16 @@ namespace Framework
         {
             if (MathHelper.EqualsZero(_speedTemp))
             {
-                DebugLog.Warning($"EasyAnimation.Resume : Pause関数を呼んでいません");
+                DebugLog.Warning($"EasyAnimation.Resume : Pause関数を呼んでいません", DebugLogColor.animation);
                 return;
             }
             
             _playable.SetSpeed(_speedTemp);
         }
+        
+        public void HasPlayable()
+        {}
+        
 
         public override string ToString()
         {
