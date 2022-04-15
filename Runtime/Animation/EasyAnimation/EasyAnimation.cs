@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Playables;
 
@@ -18,6 +19,9 @@ namespace Framework
 
         [SerializeField]
         EasyBlendTree[] _blendTrees = null;
+
+        [SerializeField, Range(0, 3), OnValueChanged("OnChangedAnimationSpeed")]
+        float _animationSpeed = 1.0f;
 
         EasyAnimationPlayable _playable;
         public EasyAnimationPlayable Playable => _playable;
@@ -240,6 +244,13 @@ namespace Framework
             // Vector3 angularDisplacement = rotationAxis * angleInDegrees * Mathf.Deg2Rad;
             // Vector3 animAngularVelocity = angularDisplacement / Time.deltaTime;
         }
+        
+#if UNITY_EDITOR
+        void OnChangedAnimationSpeed()
+        {
+            SetSpeed(_animationSpeed);
+        }
+#endif
     }
 }
 
